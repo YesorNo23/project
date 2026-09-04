@@ -30,5 +30,7 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 # 6. ตั้งสิทธิ์ (Permissions) ให้ Laravel สามารถเขียนไฟล์ได้
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+CMD php artisan db:seed --force && apache2-foreground
+
 # 7. เปิด Port 80
 EXPOSE 80
