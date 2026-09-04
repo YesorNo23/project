@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Music</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/type.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('image/favicon.ico') }}">
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @stack('styles')
+
+</head>
+<body>
+    @include('user/header')
+
+        
+        @yield('content')
+
+        <!-- Music Player Modal (ป๊อปอัพเล่นเพลง) -->
+        <div class="modal-overlay" id="musicPlayerModal">
+            <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px 25px;">
+                <!-- ปุ่มกากบาทออก -->
+                <button class="close-modal-btn" onclick="closePlayerModal()">&times;</button>
+                
+                <!-- ชื่อเพลง -->
+                <h2 class="modal-title" id="playerSongName" style="margin-bottom: 20px; font-size: 20px;">ชื่อเพลง</h2>
+                
+                <!-- รูปภาพเพลง (ทำเป็นวงกลมให้เหมือนแผ่นเพลง) -->
+                <div id="playerImage" style="width: 220px; height: 220px; margin: 0 auto 30px auto; border-radius: 50%; box-shadow: 0 8px 20px rgba(0,0,0,0.2); background-size: cover; background-position: center; border: 4px solid #f0f0f0;"></div>
+                
+                <!-- เครื่องเล่นเสียง (มีปุ่มเล่น/หยุด และหลอดเวลาในตัว) -->
+                <audio id="mainAudioPlayer" controls style="width: 100%; outline: none;"></audio>
+            </div>
+        </div>
+        
+    @include('user/footter')
+    <!-- ประเมินอารมณ์ -->
+    <div class="modal-overlay" id="moodModal">
+        <div class="modal-content">
+            <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+            
+            <h2 class="modal-title">แบบประเมินอารมณ์</h2>
+            <p class="modal-subtitle">แบบประเมินอารมณ์ เพื่อเพิ่มประสิทธิภาพการเลือกคลื่นเสียง</p>
+            
+            <div class="mood-options">
+                <ol class="quiz-list">
+                    <li>
+                        <span class="question-text">ตอนนี้คุณกำลังทำอะไรอยู่</span>
+                        <div class="checkbox-group">
+                            <label><input type="radio" name="q1" value="work"> ทำงาน/อ่านหนังสือ</label>
+                            <label><input type="radio" name="q1" value="relax"> พักผ่อน</label>
+                            <label><input type="radio" name="q1" value="sleep"> เตรียมตัวเข้านอน</label>
+                            <label><input type="radio" name="q1" value="other"> อื่นๆ</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="question-text">คุณใช้งานในช่วงเวลาใด</span>
+                        <div class="checkbox-group">
+                            <label><input type="radio" name="q2" value="morning"> เช้า</label>
+                            <label><input type="radio" name="q2" value="noon"> กลางวัน</label>
+                            <label><input type="radio" name="q2" value="evening"> เย็น</label>
+                            <label><input type="radio" name="q2" value="bedtime"> ก่อนนอน</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="question-text">เคยใช้คลื่นเสียงนี้มาก่อนหรือไม่</span>
+                        <div class="checkbox-group">
+                            <label><input type="radio" name="q3" value="never"> ไม่เคย</label>
+                            <label><input type="radio" name="q3" value="good"> เคยใช้และได้ผลดี</label>
+                            <label><input type="radio" name="q3" value="bad"> เคยใช้แต่ไม่ได้ผล</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="question-text">เป้าหมายหลักต้องการใช้คลื่นเสียงช่วยอะไร</span>
+                        <div class="checkbox-group">
+                            <label><input type="radio" name="q4" value="focus"> เพิ่มสมาธิ</label>
+                            <label><input type="radio" name="q4" value="stress-relief"> ลดความเครียด</label>
+                            <label><input type="radio" name="q4" value="sleep-aid"> นอนหลับ</label>
+                            <label><input type="radio" name="q4" value="mood-boost"> ปรับอารมณ์ให้ดีขึ้น</label>
+                            <label><input type="radio" name="q4" value="general-relax"> ผ่อนคลายทั่วไป</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="question-text">สถานะปัจจุบันตอนนี้คุณรู้สึกยังไง</span>
+                        <div class="checkbox-group">
+                            <label><input type="radio" name="q5" value="stressed"> เครียด</label>
+                            <label><input type="radio" name="q5" value="sleepy"> ง่วง</label>
+                            <label><input type="radio" name="q5" value="bored"> เบื่อ</label>
+                            <label><input type="radio" name="q5" value="normal"> ปกติ</label>
+                            <label><input type="radio" name="q5" value="distracted"> ฟุ้งซ่าน</label>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+            <div style="text-align: center; margin-top: 25px;">
+                <button class="btn btn-round" id="submitMoodBtn">บันทึกข้อมูล</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="{{ asset('js/playermodal.js') }}"></script>
+<script src="{{ asset('js/script.js') }}"></script>
+
+</html>

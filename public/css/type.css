@@ -1,0 +1,378 @@
+.page-wrap {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    gap: 20px;
+    flex-wrap: wrap; /* บนจอแคบให้คอลัมน์ตกลงมาซ้อนกันแทนที่จะบีบแคบจนพัง */
+}
+
+/* Hero */
+.hero-card {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    /* ไล่ระดับความสูงตามความกว้างจอ: ต่ำสุด 220px (มือถือ) สูงสุด 350px (จอใหญ่) */
+    height: clamp(220px, 32vw, 350px);
+    cursor: pointer;
+    background: transparent;
+    margin-bottom: 20px;
+}
+.hero-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+    transition: opacity 0.4s;
+}
+.hero-tint {
+    position: absolute;
+    inset: 0;
+    background: none;
+}
+.hero-body {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* padding ไล่ระดับแทนค่าคงที่ 30px 40px */
+    padding: clamp(16px, 3vw, 30px) clamp(16px, 4vw, 40px);
+}
+.hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.hero-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.55);
+    color: #4d41b7;
+    font-weight: 500;
+}
+.hero-nav {
+    display: flex;
+    gap: 6px;
+}
+.hero-nav button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.4);
+    color: #26215C;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.hero-nav button:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+.hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.hero-info h2 {
+    font-size: clamp(15px, 2.2vw, 19px);
+    font-weight: 500;
+    color: #26215C;
+    margin-bottom: 3px;
+}
+.hero-info p {
+    font-size: clamp(11px, 1.4vw, 12px);
+    color: #9663ea;
+}
+.hero-dots {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+}
+.hdot {
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(83, 74, 183, 0.3);
+    cursor: pointer;
+    transition: all 0.25s;
+    width: 5px;
+}
+.hdot.on {
+    background: #534AB7;
+    width: 16px;
+}
+.hero-play {
+    width: clamp(38px, 5vw, 46px);
+    height: clamp(38px, 5vw, 46px);
+    border-radius: 50%;
+    background: #503f8a;
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.hero-play:hover {
+    background: #3C3489;
+    transform: scale(1.05);
+}
+.hero-play.playing {
+    background: #3C3489;
+}
+
+/* Now Playing */
+.np-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #CECBF6;
+}
+.np-pill.hidden {
+    display: none;
+}
+.np-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #534AB7;
+    animation: pulse 1.2s infinite;
+    flex-shrink: 0;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+.np-thumb {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+.np-info {
+    flex: 1;
+    min-width: 0;
+}
+.np-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #26215C;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.np-sub {
+    font-size: 10px;
+    color: #AFA9EC;
+    margin-top: 1px;
+}
+.np-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #EEEDFE;
+    border: none;
+    color: #534AB7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+.np-btn:hover {
+    background: #CECBF6;
+}
+
+/* Card Grid */
+.sec-lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card-grid {
+    display: grid;
+    /* auto-fit + minmax ให้จำนวนคอลัมน์ปรับเองตามความกว้างจอ
+       แทนการ fix 6 คอลัมน์ตายตัว การ์ดจะไม่มีวันเล็กกว่า 140px
+       และขยายเต็มพื้นที่ (1fr) เมื่อมีที่ว่างเหลือ */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr),repeat(5, 1fr));
+    gap: clamp(10px, 2vw, 20px);
+    margin-top: 20px;
+    width: 100%;
+    max-width:none;
+}
+.mcard {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #EDE9FF;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.mcard:hover {
+    border-color: #CECBF6;
+    transform: translateY(-2px);
+}
+.mcard.playing {
+    border: 1.5px solid #534AB7;
+    background: #EEEDFE;
+}
+.mcard-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+.mcard-ov {
+    position: absolute;
+    inset: 0;
+    background: rgba(83, 74, 183, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.mcard:hover .mcard-ov,
+.mcard.playing .mcard-ov {
+    opacity: 1;
+}
+.mcard-pbtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    color: #534AB7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+}
+.mcard-info {
+    padding: 9px 10px 11px;
+}
+.mcard-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #26215C;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+.mcard-sub {
+    font-size: 10px;
+    color: #AFA9EC;
+}
+
+/* Footer buttons */
+.foot {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.fbtn {
+    flex: 1;
+    min-width: 120px; /* กันปุ่มบีบเล็กจนตัวหนังสือชนกันบนจอแคบมาก */
+    padding: 10px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.fbtn.pri {
+    background: #534AB7;
+    border: none;
+    color: #fff;
+}
+.fbtn.pri:hover {
+    background: #3C3489;
+}
+.fbtn.sec {
+    background: #fff;
+    border: 1px solid #CECBF6;
+    color: #534AB7;
+}
+.fbtn.sec:hover {
+    background: #EEEDFE;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Breakpoints: จุดที่ clamp()/auto-fit เพียงอย่างเดียวไม่พอ
+   ต้องเปลี่ยน layout structure จริงๆ (เช่น flex-direction)
+   ───────────────────────────────────────────────────────────── */
+
+/* แท็บเล็ต */
+@media (max-width: 900px) {
+    .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    .hero-body {
+        padding: 18px 20px;
+    }
+}
+
+/* มือถือ */
+@media (max-width: 600px) {
+    .page-wrap {
+        flex-direction: column;
+        min-height: auto;
+    }
+    .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+        gap: 10px;
+    }
+    .hero-card {
+        border-radius: 14px;
+        height: clamp(180px, 45vw, 240px);
+        margin-bottom: 14px;
+    }
+    .hero-body {
+        padding: 14px 16px;
+    }
+    .hero-nav button {
+        width: 24px;
+        height: 24px;
+    }
+    .np-pill {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+    .foot {
+        flex-direction: column;
+    }
+    .fbtn {
+        min-width: 0;
+    }
+}

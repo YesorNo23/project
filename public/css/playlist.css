@@ -1,0 +1,37 @@
+.top-bar{
+
+    display:flex;
+    
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+.btn-create{
+
+    background:#EC5C97;
+    
+
+    color:white;
+
+    border:none;
+
+    padding:12px 22px;
+
+    border-radius:30px;
+
+    transition:.3s;
+
+}
+
+.btn-create:hover{
+
+    background:#d94883;
+
+}
+
+
+
