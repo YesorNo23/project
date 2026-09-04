@@ -13,14 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. ระบุตำแหน่งไฟล์ sql ในโปรเจกต์
         $sqlPath = database_path('project.sql');
 
         if (File::exists($sqlPath)) {
-            // 2. ดึงข้อความคำสั่ง SQL ทั้งหมดออกมา
             $sql = File::get($sqlPath);
 
-            // 3. ยิงคำสั่งทั้งหมดเข้าฐานข้อมูลคลาวด์ Aiven ในครั้งเดียว
+            // บรรทัดที่เพิ่มใหม่: สั่งปิดการบังคับ Primary Key ชั่วคราวเฉพาะรอบนี้
+            DB::unprepared("SET SESSION sql_require_primary_key = 0;");
+
+            // ยิงคำสั่งทั้งหมดเข้าฐานข้อมูลคลาวด์ Aiven
             DB::unprepared($sql);
             
             $this->command->info('Database imported successfully from SQL file!');
