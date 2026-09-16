@@ -101,11 +101,14 @@ Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'
 
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/init-db-now', function () {
-    // ลบตารางเดิม รัน migration ใหม่หมด และลง seeder
-    Artisan::call('migrate:fresh', [
-        '--seed' => true,
-        '--force' => true
-    ]);
-    return 'Database Initialized Successfully: <br><pre>' . Artisan::output() . '</pre>';
+
+
+Route::get('/create-sessions-table', function () {
+    // 1. สั่งสร้างไฟล์ Migration สำหรับตาราง sessions (ถ้ายังไม่มี)
+    Artisan::call('session:table');
+    
+    // 2. สั่งรัน Migration ขึ้น Aiven
+    Artisan::call('migrate', ['--force' => true]);
+    
+    return 'Sessions Table Created Successfully!';
 });
