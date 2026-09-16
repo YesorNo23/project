@@ -99,4 +99,13 @@ Route::put('update_playlist/{id?}',[PlayListController::class,'update_playlist']
 Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_to_playlist'])->middleware('auth')->name('songs.add'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 
+use Illuminate\Support\Facades\Artisan;
 
+Route::get('/init-db-now', function () {
+    // ลบตารางเดิม รัน migration ใหม่หมด และลง seeder
+    Artisan::call('migrate:fresh', [
+        '--seed' => true,
+        '--force' => true
+    ]);
+    return 'Database Initialized Successfully: <br><pre>' . Artisan::output() . '</pre>';
+});
