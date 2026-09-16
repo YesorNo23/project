@@ -1,3 +1,4 @@
+COPY ca.pem /etc/ssl/certs/aiven-ca.pem
 FROM php:8.2-apache
 
 # 1. ติดตั้ง System Dependencies และ PHP Extensions ที่ Laravel ต้องใช้
@@ -37,8 +38,8 @@ EXPOSE 80
 
 # แก้ไขให้ Apache รับ Port จาก Render แบบไดนามิก (ถ้าไม่มีให้ใช้ 80)
 RUN sed -i 's/Listen 80/Listen ${PORT:-80}/g' /etc/apache2/ports.conf
-RUN sed -i 's/:80/:${PORT:-80}/g' /etc/apache2/sites-available/000-default.conf
-
+# ปรับแก้บรรทัดนี้ใน Dockerfile
+RUN sed -i 's/80/${PORT:-80}/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 # 7. สร้าง Entrypoint สำหรับรัน Migrate อัตโนมัติ (แต่ไม่รัน Seed)
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
