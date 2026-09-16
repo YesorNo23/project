@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         // 1. Master Tables (ไม่มี Foreign Key)
         $this->call([
             UserSeeder::class,
-            UsergroupSeeder::class,
+            UserGroupSeeder::class,
             ApplicationSeeder::class,
             CategorySeeder::class,
             MusicSeeder::class,
