@@ -99,3 +99,9 @@ Route::put('update_playlist/{id?}',[PlayListController::class,'update_playlist']
 Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_to_playlist'])->middleware('auth')->name('songs.add'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/run-secret-seeder-12345', function () {
+    Artisan::call('db:seed', ['--force' => true]);
+    return 'Database Seeded Successfully!';
+});
