@@ -101,20 +101,35 @@ Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/init-database-now', function () {
     try {
-        // ล้าง Cache การเรียก Route เดิมออกก่อน
-        Artisan::call('route:clear');
+        // 1. เคลียร์ Cache ระบบ
         Artisan::call('config:clear');
+        Artisan::call('route:clear');
 
-        // ปิดการเช็ค FK แล้วเคลียร์ DB สร้างใหม่พร้อม Seed
+        // 2. ปิด FK Checks แล้วสั่ง Wipe DB + Migrate + Seed
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Artisan::call('migrate:fresh', ['--force' => true]);
-        Artisan::call('db:seed', ['--force' => true]);
+        
+        Artisan::call('migrate:fresh', [
+            '--force' => true
+        ]);
+
+        // 3. สร้างตาราง sessions เผื่อไว้ในฐานข้อมูลด้วย
+        if (!Schema::hasTable('sessions')) {
+            Artisan::call('session:table');
+            Artisan::call('migrate', ['--force' => true]);
+        }
+
+        // 4. รัน Seeder
+        Artisan::call('db:seed', [
+            '--force' => true
+        ]);
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        return '<h1>SUCCESS!</h1><p>Database wiped and seeded successfully.</p>';
+        return '<h1>SUCCESS!</h1><p>Database and Sessions table created, seeded successfully.</p>';
     } catch (\Exception $e) {
         return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
     }
