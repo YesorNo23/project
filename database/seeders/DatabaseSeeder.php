@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             ApplicationSeeder::class,
             CategorySeeder::class,
             MusicSeeder::class,
-            SessionsSeeder::class, // (ถ้าต้องการ Seed)
+            //SessionsSeeder::class, // (ถ้าต้องการ Seed)
         ]);
 
         // 2. Child Tables (มี Foreign Key)
