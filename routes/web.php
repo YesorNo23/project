@@ -100,38 +100,21 @@ Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 Route::get('/init-database-now', function () {
     try {
+        // เคลียร์ Cache ให้ระบบพร้อม
         Artisan::call('config:clear');
         Artisan::call('route:clear');
 
-        // ปิด FK Checks ใน Session เดียวกัน แล้วลบทุกตาราง
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
-        $tables = DB::select('SHOW TABLES');
-        foreach ($tables as $table) {
-            $tableName = current((array)$table);
-            Schema::dropIfExists($tableName);
-        }
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
+        // ใช้ migrate:fresh ลบทุกตารางให้เกลี้ยง แล้วสร้างใหม่ + ลง Seed
+        Artisan::call('migrate:fresh', [
+            '--force' => true,
+            '--seed' => true
+        ]);
 
-        // รัน Migration ใหม่ทั้งหมด
-        Artisan::call('migrate', ['--force' => true]);
-
-        // สร้างตาราง sessions เผื่อไว้
-        if (!Schema::hasTable('sessions')) {
-            Artisan::call('session:table');
-            Artisan::call('migrate', ['--force' => true]);
-        }
-
-        // รัน Seeder
-        Artisan::call('db:seed', ['--force' => true]);
-
-        return '<h1>SUCCESS!</h1><p>Database reset and seeded successfully.</p>';
+        return '<h1>SUCCESS!</h1><p>Database cleared, migrated, and seeded successfully!</p>';
     } catch (\Exception $e) {
         return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
     }
-
 });
