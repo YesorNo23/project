@@ -103,18 +103,19 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 Route::get('/init-database-now', function () {
-    // ปิดการเช็ค Foreign Key ชั่วคราวเพื่อเคลียร์ทุกตาราง
-    DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-    
-    Artisan::call('migrate:fresh', [
-        '--force' => true,
-    ]);
+    try {
+        // ล้าง Cache การเรียก Route เดิมออกก่อน
+        Artisan::call('route:clear');
+        Artisan::call('config:clear');
 
-    Artisan::call('db:seed', [
-        '--force' => true,
-    ]);
+        // ปิดการเช็ค FK แล้วเคลียร์ DB สร้างใหม่พร้อม Seed
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Artisan::call('migrate:fresh', ['--force' => true]);
+        Artisan::call('db:seed', ['--force' => true]);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-    DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-    return 'Database wiped, re-migrated and seeded successfully!<br><pre>' . Artisan::output() . '</pre>';
+        return '<h1>SUCCESS!</h1><p>Database wiped and seeded successfully.</p>';
+    } catch (\Exception $e) {
+        return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
+    }
 });
