@@ -100,12 +100,21 @@ Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/init-database-now', function () {
-    // ล้างตาราง รัน Migration และสั่ง Seed ข้อมูลทั้งหมด
+    // ปิดการเช็ค Foreign Key ชั่วคราวเพื่อเคลียร์ทุกตาราง
+    DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+    
     Artisan::call('migrate:fresh', [
-        '--seed' => true,
-        '--force' => true
+        '--force' => true,
     ]);
-    return 'Database initialized successfully!<br><pre>' . Artisan::output() . '</pre>';
+
+    Artisan::call('db:seed', [
+        '--force' => true,
+    ]);
+
+    DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+    return 'Database wiped, re-migrated and seeded successfully!<br><pre>' . Artisan::output() . '</pre>';
 });
