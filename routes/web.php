@@ -104,20 +104,23 @@ use Illuminate\Support\Facades\DB;
 
 Route::get('/init-database-now', function () {
     try {
+        // บังคับเปลี่ยน Cache Driver เป็น array ชั่วคราวเฉพาะตอนรัน Route นี้
+        // เพื่อป้องกัน Error หาตาราง cache ไม่เจอ
+        config(['cache.default' => 'array']);
+        
         Artisan::call('config:clear');
-        Artisan::call('cache:clear');
         
         // 1. ปิดเช็ค Foreign Key
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         
-        // 2. ดึงตารางและ View ทั้งหมดใน DB ออกมาเชือดทีละตัวด้วย Raw SQL
+        // 2. ดึงตารางและ View ทั้งหมดใน DB ออกมาลบทิ้ง
         $tables = DB::select('SHOW FULL TABLES');
         $droppedList = [];
         
         foreach ($tables as $table) {
             $tableArray = (array)$table;
             $tableName = array_values($tableArray)[0];
-            $tableType = array_values($tableArray)[1]; // เช็คว่าเป็น BASE TABLE หรือ VIEW
+            $tableType = array_values($tableArray)[1];
             
             if ($tableType === 'VIEW') {
                 DB::statement("DROP VIEW IF EXISTS `$tableName`");
@@ -134,9 +137,8 @@ Route::get('/init-database-now', function () {
         Artisan::call('migrate', ['--force' => true]);
         Artisan::call('db:seed', ['--force' => true]);
 
-        // สังเกตคำว่า VERSION 4 เพื่อยืนยันว่าโค้ดอัปเดตแล้ว
-        return '<h1>SUCCESS - VERSION 4!</h1><p>Dropped: ' . implode(', ', $droppedList) . '</p>';
+        return '<h1>SUCCESS - VERSION 5!</h1><p>Dropped: ' . implode(', ', $droppedList) . '</p>';
     } catch (\Exception $e) {
-        return '<h1>ERROR - VERSION 4!</h1><p>' . $e->getMessage() . '</p>';
+        return '<h1>ERROR - VERSION 5!</h1><p>' . $e->getMessage() . '</p>';
     }
 });
