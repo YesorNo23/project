@@ -105,28 +105,25 @@ use Illuminate\Support\Facades\Schema;
 
 Route::get('/init-database-now', function () {
     try {
-        Artisan::call('config:clear');
-
-        // 1. ปิดการเช็ค Foreign Key 
+        // 1. ปิดเช็ค Foreign Key
         Schema::disableForeignKeyConstraints();
 
-        // 2. ดึงรายชื่อตารางทั้งหมดและสั่งลบทิ้ง (รวมถึง migrations)
-        $tables = DB::select('SHOW TABLES');
-        foreach ($tables as $table) {
-            $tableName = current((array)$table);
-            Schema::dropIfExists($tableName);
-        }
+        // 2. ใช้ฟังก์ชันหลักของ Laravel ล้างทุกตารางให้เกลี้ยง
+        Schema::dropAllTables();
 
-        // 3. เปิดการเช็ค Foreign Key กลับมา
+        // 3. ย้ำความชัวร์: สั่งทำลายตาราง migrations ทิ้งด้วย Raw SQL อีกรอบ
+        DB::statement('DROP TABLE IF EXISTS `migrations`');
+
+        // 4. เปิดเช็ค Foreign Key กลับมา
         Schema::enableForeignKeyConstraints();
 
-        // 4. เริ่มรัน Migrate แบบปกติ (ไม่ใช่ fresh) เพราะ DB ว่างเปล่าแล้ว
+        // 5. สร้างฐานข้อมูลใหม่จากศูนย์
         Artisan::call('migrate', ['--force' => true]);
         
-        // 5. ลงข้อมูล Seed
+        // 6. ลงข้อมูล Seeder
         Artisan::call('db:seed', ['--force' => true]);
 
-        return '<h1>SUCCESS!</h1><p>Database hard-dropped, migrated and seeded successfully!</p>';
+        return '<h1>SUCCESS!</h1><p>Database completely dropped, remigrated, and seeded!</p>';
     } catch (\Exception $e) {
         return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
     }
