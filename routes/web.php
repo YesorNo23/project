@@ -101,30 +101,42 @@ Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 Route::get('/init-database-now', function () {
     try {
-        // 1. ปิดเช็ค Foreign Key
-        Schema::disableForeignKeyConstraints();
-
-        // 2. ใช้ฟังก์ชันหลักของ Laravel ล้างทุกตารางให้เกลี้ยง
-        Schema::dropAllTables();
-
-        // 3. ย้ำความชัวร์: สั่งทำลายตาราง migrations ทิ้งด้วย Raw SQL อีกรอบ
-        DB::statement('DROP TABLE IF EXISTS `migrations`');
-
-        // 4. เปิดเช็ค Foreign Key กลับมา
-        Schema::enableForeignKeyConstraints();
-
-        // 5. สร้างฐานข้อมูลใหม่จากศูนย์
-        Artisan::call('migrate', ['--force' => true]);
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
         
-        // 6. ลงข้อมูล Seeder
+        // 1. ปิดเช็ค Foreign Key
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
+        // 2. ดึงตารางและ View ทั้งหมดใน DB ออกมาเชือดทีละตัวด้วย Raw SQL
+        $tables = DB::select('SHOW FULL TABLES');
+        $droppedList = [];
+        
+        foreach ($tables as $table) {
+            $tableArray = (array)$table;
+            $tableName = array_values($tableArray)[0];
+            $tableType = array_values($tableArray)[1]; // เช็คว่าเป็น BASE TABLE หรือ VIEW
+            
+            if ($tableType === 'VIEW') {
+                DB::statement("DROP VIEW IF EXISTS `$tableName`");
+            } else {
+                DB::statement("DROP TABLE IF EXISTS `$tableName`");
+            }
+            $droppedList[] = $tableName;
+        }
+        
+        // 3. เปิดเช็ค Foreign Key กลับ
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // 4. รัน Migrate & Seed ใหม่
+        Artisan::call('migrate', ['--force' => true]);
         Artisan::call('db:seed', ['--force' => true]);
 
-        return '<h1>SUCCESS!</h1><p>Database completely dropped, remigrated, and seeded!</p>';
+        // สังเกตคำว่า VERSION 4 เพื่อยืนยันว่าโค้ดอัปเดตแล้ว
+        return '<h1>SUCCESS - VERSION 4!</h1><p>Dropped: ' . implode(', ', $droppedList) . '</p>';
     } catch (\Exception $e) {
-        return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
+        return '<h1>ERROR - VERSION 4!</h1><p>' . $e->getMessage() . '</p>';
     }
 });
