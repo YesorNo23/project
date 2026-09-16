@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('category', function (Blueprint $table) {
+            // int(11) AUTO_INCREMENT PRIMARY KEY
+            $table->integer('id', true);
+
+            $table->string('name', 50)->nullable();
+            $table->tinyInteger('status')->nullable();
         });
     }
 
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('category');
     }
 };

@@ -25,7 +25,7 @@ class HomePageController extends Controller
         
 
         // คำนวณหาหมวดหมู่คลื่นเสียงยอดนิยม
-        $categories = FilterDetail::where('catagory_id',2)->withSum('music', 'play_count')->get();
+        $categories = FilterDetail::where('category_id',2)->withSum('music', 'play_count')->get();
         $grandTotalListens = $categories->sum('music_sum_play_count');
         
         $popularCategories = $categories->map(function ($category) use ($grandTotalListens) {

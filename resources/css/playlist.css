@@ -1,37 +1,98 @@
-.top-bar{
-
-    display:flex;
-    
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:30px;
-
+/* --- หน้าเพลย์ลิสต์ --- */
+.playlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 24px;
 }
 
-.btn-create{
-
-    background:#EC5C97;
-    
-
-    color:white;
-
-    border:none;
-
-    padding:12px 22px;
-
-    border-radius:30px;
-
-    transition:.3s;
-
+@media (max-width: 480px) {
+    .playlist-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .playlist-header .btn-round {
+        width: 100%;
+    }
 }
 
-.btn-create:hover{
-
-    background:#d94883;
-
+.playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 40px;
+}
+@media (max-width: 900px) {
+    .playlist-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+    .playlist-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+.playlist-card { cursor: pointer; }
 
+.playlist-cover {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-size: cover;
+    background-position: center;
+}
 
+/* ปกแบบ collage 4 ช่อง (ใช้เมื่อยังไม่ได้กำหนดรูปปกเดี่ยว) */
+.playlist-cover-collage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.playlist-cover-collage > div {
+    background-size: cover;
+    background-position: center;
+}
+
+.playlist-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.playlist-card:hover .playlist-cover-overlay { opacity: 1; }
+.playlist-cover-overlay .music-play-btn { margin: 0; }
+
+.playlist-info { margin-top: 8px; }
+.playlist-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.playlist-count { font-size: 11.5px; color: #4a202a; }
+
+/* การ์ด "สร้างเพลย์ลิสต์ใหม่" ท้ายกริดเสมอ */
+.playlist-create-cover {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    border: 2px dashed #4a202a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 32px;
+    color: #4a202a;
+}

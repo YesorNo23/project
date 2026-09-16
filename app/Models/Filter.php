@@ -18,7 +18,7 @@ class Filter extends Model
 
     public function value(): HasMany
     {
-        return $this->hasMany(FilterDetail::class, 'catagory_id', 'id');
+        return $this->hasMany(FilterDetail::class, 'category_id', 'id');
     }
 
     

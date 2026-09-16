@@ -82,10 +82,10 @@ class UserController extends Controller
     }
 
     // Function สำหรับในการแสดงรายละเอียดข้อมูลใน ตาราง user ตาม id ที่ส่งมา
-    public function det($id, $viewName){
+    public function det($id){
         $user = User::find($id);
         if($user){
-            return view($viewName, compact('user'));
+            return view('admin.user_det', compact('user'));
         }
         else{
             return redirect()->back();
@@ -93,16 +93,16 @@ class UserController extends Controller
     }
     
     // Function ในการเรียกข้อมูลเพื่อทำการเตรียมแก้ไขข้อมูลของผู้ใช้ มี 2 รูปแบบ คือ 1.เพิ่มผู้ใช้(มี password ให้กรอก) 2.แก้ไขข้อมูลใช้(ไม่มี)
-    public function editinfo($id = null,$viewName){
+    public function editinfo($id = null){
         $user = User::find($id);
         $groups = UserGroup::all()->where('status','=',1);
-        return view($viewName, compact('user','groups'));
+        return view('admin.user_editinfo', compact('user','groups'));
     }
 
-    public function editpass($id, $viewName){
+    public function editpass($id){
         $user = User::find($id);
         $userId = $user->id;
-        return view($viewName, compact('userId'));
+        return view('admin.user_editpass', compact('userId'));
     }
 
     public function savepass(Request $request , $id){
@@ -165,10 +165,69 @@ class UserController extends Controller
         
         // บันทึก id ของผู้ใช้ ในตาราง uig (user in group) และ id กลุ่มผู้ใช้(ugid)
         $user->uig()->create(['uid'    => $user->id], 
-                             ['ugid'   => 2],
-                             ['status' => 1]);
+                             ['ugid'   => '2'],
+                             ['status' => '1']);
+
+        $this->saveLog('ผูใช้ uid: '.$user->id.' ลงทะเบียน','ลงทะเบียน');
 
         return redirect()->route('regisfrom')->with('success', 'บันทึกข้อมูลเรียบร้อย!');
     }
+
+    // Function สำหรับการบันทึกข้อมูลลงใน ตาราง user โดยรับข้อมูลมาจาก Register From usere edit form
+    public function updateprofile(Request $request)
+    {
+        // การกำหนดรูปแบบข้อมูลที่กรอก
+        $validated = $request->validate([
+            'name'      => 'required|between:1,255',
+            'surname'   => 'required|between:1,255',
+            'birthdate' => 'required|date',
+            'gender'    => 'required|in:male,female,other',
+        ], [
+            // การแจ้งเตือนเมื่อข้อมูลที่กรอกไม่ตรงตามรูปแบบ
+            'name.required'      => 'กรุณากรอกชื่อด้วยครับ',
+            'name.between'       => 'กรอกไม่เกิน 255 ตัวอักษร',
+            'surname.required'   => 'กรุณากรอกนามสกุลด้วยครับ',
+            'surname.between'    => 'กรอกไม่เกิน 255 ตัวอักษร',
+            'birthdate.required' => 'กรุณาระบุวันเกิดด้วยครับ',
+            'birthdate.date'     => 'รูปแบบวันเกิดไม่ถูกต้อง',
+            'gender.required'    => 'กรุณาระบุเพศด้วยครับ',
+            'gender.in'          => 'ค่าที่เลือกไม่ถูกต้อง',
+        ]);
+
+        $user = User::findOrFail(auth()->id());
+        $user->update($validated);
+        $this->saveLog('แก้ไขข้อมูลส่วนตัว','แก้ไขข้อมูล');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'บันทึกข้อมูลเรียบร้อย!',
+            'data'    => $user,
+        ], 200);
+    }
+
+    public function changepassword(Request $request){
+
+        $request->validate([
+        'old_password' => 'required|current_password',
+        'new_password' => 'required|min:8|confirmed',
+        
+    ], [
+        'old_password.required' => 'กรุณากรอกรหัสผ่านเก่า',
+        'old_password.current_password' => 'รหัสผ่านเก่าที่คุณกรอกไม่ถูกต้อง!',
+        'new_password.required' => 'กรุณากรอกรหัสผ่านใหม่',
+        'new_password.min' => 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษร',
+        'new_password.confirmed' => 'การยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
+    ]);
+
+        $user = User::findOrFail(auth()->id());
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+        $this->saveLog('เปลี่ยนรหัสผ่าน','แก้ไขข้อมูล');
+
+        
+    }
+
+
+
 }
 

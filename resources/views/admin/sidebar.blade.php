@@ -36,9 +36,6 @@
         <a href="{{ route('playlist.def' )}}" class="sidebar-item {{ request()->is('admin/playlist*') ? 'active':'' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
             <i class="bi bi-music-note-list"></i> play list
         </a>
-        <a href="{{ route('filter.def' )}}" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
-            <i class="bi bi-file-earmark-text"></i> แบบประเมิน
-        </a>
         <a href="{{ route('history.def') }}" class="sidebar-item {{ request()->is('admin/history*') ? 'active':'' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
             <i class="bi bi-hourglass-split"></i> ประวัติการฟังคลื่นเสียง
         </a>

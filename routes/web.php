@@ -17,15 +17,9 @@ Route::get('admin',[HomePageController::class,'adminDashbord'])->middleware('aut
 
 // เส้นทางในการรับส่ง แสดงผล และบันทึก ของข้อมูล Users ทั้งหมดในระบบ
 Route::get('admin/user/def/',[UserController::class,'def'])->middleware('auth')->middleware('CheckAcl:UserManagement,1')->name('user.def'); // เส้นทางไปยังหน้าตารางข้อมูลของผู้ใช้ในระบบ users.blade.php
-Route::get('admin/user/det/{id}',function($id) {
-    return app(UserController::class)->det($id,'admin.user_det');
-    })->middleware('auth')->middleware('CheckAcl:UserManagement,1')->name('user.det'); // เส้นทางไปยังหน้ารายละเอียดข้อมูลผู้ใช้ ตาม id ที่ส่งไป
-Route::get('admin/user/editinfo/{id?}',function($id = null) {
-    return app(UserController::class)->editinfo($id,'admin.user_editinfo'); 
-    })->middleware('auth')->middleware('CheckAcl:UserManagement,2')->name('user.editinfo'); // เส้นทางไปยังหน้าแก้ข้อมูลผู้ใช้ ของ admin ตาม id ที่ส่งไป
-Route::get('admin/user/editpass/{id?}',function($id = null) {
-    return app(UserController::class)->editpass($id,'admin.user_editpass');
-    })->middleware('CheckAcl:UserManagement,2')->middleware('auth')->name('user.editpass'); // เส้นทางไปยังหน้าแก้รหัสผ่านของผู้ใช้ ของ admin ตาม id ที่ส่งไป
+Route::get('admin/user/det/{id}',[UserController::class,'det'])->middleware('auth')->middleware('CheckAcl:UserManagement,1')->name('user.det'); // เส้นทางไปยังหน้ารายละเอียดข้อมูลผู้ใช้ ตาม id ที่ส่งไป
+Route::get('admin/user/editinfo/{id?}',[UserController::class,'editinfo'])->middleware('auth')->middleware('CheckAcl:UserManagement,2')->name('user.editinfo'); // เส้นทางไปยังหน้าแก้ข้อมูลผู้ใช้ ของ admin ตาม id ที่ส่งไป
+Route::get('admin/user/editpass/{id?}',[UserController::class,'editpass'])->middleware('CheckAcl:UserManagement,2')->middleware('auth')->name('user.editpass'); // เส้นทางไปยังหน้าแก้รหัสผ่านของผู้ใช้ ของ admin ตาม id ที่ส่งไป
 Route::post('admin/user/save/{id?}',[UserController::class,'save'])->middleware('CheckAcl:UserManagement,2')->middleware('auth')->name('user.save'); // เส้นทางในการบันทึก เพิ่ม ข้อมูลของ User ในระบบ
 Route::post('admin/user/savepass/{id}',[UserController::class,'savepass'])->middleware('CheckAcl:UserManagement,2')->middleware('auth')->name('user.savepass'); // เส้นทางในการบันทึกรหัสผ่านของ User ในระบบ
 Route::get('admin/user/del/{id}',[UserController::class,'del'])->middleware('CheckAcl:UserManagement,2')->middleware('auth')->name('user.del'); // เส้นทางในการเปลี่ยนสถานะของผู้ใช้ ให้เป็น Active หรือ In Actives ตาม id ที่ส่ง
@@ -58,11 +52,12 @@ Route::get('admin/music/edit/{id?}',[MusicController::class,'edit'])->middleware
 Route::post('admin/music/save/{id?}',[MusicController::class,'save'])->middleware('CheckAcl:MusicManagement,2')->middleware('auth')->name('music.save'); // เส้นทางในการบันทึก เพิ่ม ข้อมูลขอคลื่นเสียง ในระบบ
 Route::get('admin/music/del/{id}',[MusicController::class,'del'])->middleware('CheckAcl:MusicManagement,2')->middleware('auth')->name('music.del'); // เส้นทางในการเปลี่ยนสถานะของคลื่นเสียง ให้เป็น Active หรือ In Actives ตาม id ที่ส่ง
 
+// เส้นทางในการรับส่ง แสดงผล และบันทึก ของข้อมูล Music(คลื่นเสียง) ทั้งหมดในระบบ
 Route::get('admin/history/def',[HistoryController::class,'def'])->middleware('auth')->name('history.def'); // เส้นทางในแสดงข้อมูล ประวัติการฟังคลื่นเสียงของผู้ใช้ทั้งหมด history_def.blade.php
 Route::get('admin/history/det/{id}',[HistoryController::class,'det'])->middleware('auth')->name('history.det'); // เส้นทางไปยังหน้ารายละเอียดข้อมูลประวัติการฟังคลื่นเสียงของผู้ใช้ ตาม id ที่ส่งไป app_det.blade.php
 Route::post('history/save',[HistoryController::class,'save'])->name('history.save'); // เส้นทางในการบันทึกประวัติการฟังคลื่นเสียงของผู้ใช้
 
-Route::get('admin/playlist/def',[PlayListController::class,'def'])->middleware('auth')->name('playlist.def'); // เส้นทางในแสดงข้อมูล ประวัติการฟังคลื่นเสียงของผู้ใช้ทั้งหมด
+Route::get('admin/playlist/def',[PlayListController::class,'def'])->middleware('CheckAcl:MusicManagement,1')->middleware('auth')->name('playlist.def'); // เส้นทางในแสดงข้อมูล ประวัติการฟังคลื่นเสียงของผู้ใช้ทั้งหมด
 Route::get('admin/playlist/det/{id?}',[PlayListController::class,'det'])->middleware('CheckAcl:MusicManagement,1')->middleware('auth')->name('playlist.det');
 Route::get('admin/playlist/edit/{id?}',[PlayListController::class,'edit'])->middleware('CheckAcl:MusicManagement,2')->middleware('auth')->name('playlist.edit');
 Route::post('admin/playlist/save/{id?}',[PlayListController::class,'save'])->middleware('CheckAcl:MusicManagement,2')->middleware('auth')->name('playlist.save');
@@ -72,7 +67,6 @@ Route::get('admin/playlist/del/{id}',[PlayListController::class,'del'])->middlew
 
 Route::get('admin/log/def',[LogController::class,'def'])->middleware('auth')->name('log.def'); // เส้นทางในแสดงข้อมูล ประวัติการใช้งานระบบทั้งหมด
 
-Route::post('assignment/save',[''])->name('assigment.save');
 
 //หน้า login เข้าใช้งาน
 Route::get('login',[AuthController::class,'loginform'])->name('login'); // เส้นทางไปยังหน้า Login เข้าใช้งาน
@@ -85,10 +79,23 @@ Route::post('/register/save',[UserController::class,'register'])->name('register
 
 
 Route::get('/', function () {return view('user.index');})->name('homepage');  // เส้นทางไปยังหน้าแรกของเว็ปไซต์
-Route::get('music/{category}', function () {return view('user.music');})->name('musicpage');  // เส้นทางไปยังหน้าแรกของเว็ปไซต์
+Route::get('music/{category}', function () {return view('user.music');})->name('musicpage');  // เส้นทางไปยังหน้าประเภทคลืนเสียง user/music.blade.php
+Route::get('history', function () {return view('user.history');})->middleware('auth')->name('historypage');  // เส้นทางไปยังหน้าประวัติการฟังคลื่นเสียงของผู้ใช user/history.blade.php
+Route::get('playlist', function () {return view('user.playlist');})->middleware('auth')->name('playlistpage');  // เส้นทางไปยังหน้าแรกของเว็ปไซต์
+Route::get('playlist/{id}', function ($id) {return view('user.playlist_detail', ['id' => $id]);})->middleware('auth')->name('playlist.datail');
+Route::get('wave', function () {return view('user.wave');})->middleware('auth')->name('wavepage');  // เส้นทางไปยังหน้าแรกของเว็ปไซต์
 
 
-Route::get('get_songs/{category?}',[MusicController::class,'get_songs']); // เส้นทางไป Logout
-Route::post('history/save',[HistoryController::class,'save']); // เส้นทางไป Logout
+// api สำหรับ เรียกข้อมูลให้กับ Front-End
+Route::get('get_songs/{category?}',[MusicController::class,'get_songs']); // เส้นทางในการเรียกข้อมูลคลื่นเสียง
+Route::get('get_history',[HistoryController::class,'get_history'])->middleware('auth'); // เส้นทางในการเรียกข้อมูลประวัติการฟัง
+Route::get('get_playlists',[PlayListController::class,'get_playlists'])->middleware('auth'); // เส้นทางในการเรียกข้อมล playlist
+Route::get('/get_playlist/{id}', [PlayListController::class, 'get_playlist'])->middleware('auth');
 
+Route::post('history/save',[HistoryController::class,'save']); // เส้นทางในการบันทึกประวัติการฟังของผู้ใช
+Route::put('/profile',[UserController::class,'updateprofile'])->middleware('auth')->name('profile.update'); // เส้นทางในการเรียกข้อมูลของผู้ใช้
+Route::put('/password',[UserController::class,'changepassword'])->middleware('auth')->name('password.change'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
+Route::put('update_playlist/{id?}',[PlayListController::class,'update_playlist'])->middleware('auth')->name('playlist.update'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
+Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_to_playlist'])->middleware('auth')->name('songs.add'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
+Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 

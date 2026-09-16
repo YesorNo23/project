@@ -12,7 +12,7 @@ class PlayList extends Model
 {
     //
     protected $table = 'playlist';
-    protected $fillable = ['uid','name','image','created_at','updated_at','status'];
+    protected $fillable = ['uid','name','image','detail','created_at','updated_at','status'];
 
     public function user()
     {

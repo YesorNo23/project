@@ -13,7 +13,7 @@ class FilterDetail extends Model
     //
     public $timestamps = false;
     protected $table = 'cat_detail';
-    protected $fillable = [ 'catagory_id',
+    protected $fillable = [ 'category_id',
                             'name',
                             'status' ];
 

@@ -13,8 +13,8 @@ abstract class Controller
         Log::create([ 'uid'        => auth()->id() ?? null,
                       'action'     => $action,   
                       'module'     => $module,  
-                      'endpoint'   => Request::fullUrl(), 
-                      'ip_address' => Request::ip(),
+                      'endpoint'   => Request::fullUrl() ?? null, 
+                      'ip_address' => Request::ip() ?? null,
                       'date'       => now()             ]);
     }
 }

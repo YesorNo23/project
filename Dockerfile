@@ -32,3 +32,14 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # 7. เปิด Port 80
 EXPOSE 80
+
+# ... (โค้ดข้อ 1-6 ของคุณเหมือนเดิม) ...
+
+# แก้ไขให้ Apache รับ Port จาก Render แบบไดนามิก (ถ้าไม่มีให้ใช้ 80)
+RUN sed -i 's/Listen 80/Listen ${PORT:-80}/g' /etc/apache2/ports.conf
+RUN sed -i 's/:80/:${PORT:-80}/g' /etc/apache2/sites-available/000-default.conf
+
+# 7. สร้าง Entrypoint สำหรับรัน Migrate อัตโนมัติ (แต่ไม่รัน Seed)
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]

@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,20 +11,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $sqlPath = database_path('project.sql');
+        // 1. Master Tables (ไม่มี Foreign Key)
+        $this->call([
+            UserSeeder::class,
+            UsergroupSeeder::class,
+            ApplicationSeeder::class,
+            CategorySeeder::class,
+            MusicSeeder::class,
+            SessionsSeeder::class, // (ถ้าต้องการ Seed)
+        ]);
 
-        if (File::exists($sqlPath)) {
-            $sql = File::get($sqlPath);
+        // 2. Child Tables (มี Foreign Key)
+        $this->call([
+            UigSeeder::class,
+            CatDetailSeeder::class,
+            CatMusicSeeder::class,
 
-            // บรรทัดที่เพิ่มใหม่: สั่งปิดการบังคับ Primary Key ชั่วคราวเฉพาะรอบนี้
-            DB::unprepared("SET SESSION sql_require_primary_key = 0;");
-
-            // ยิงคำสั่งทั้งหมดเข้าฐานข้อมูลคลาวด์ Aiven
-            DB::unprepared($sql);
-            
-            $this->command->info('Database imported successfully from SQL file!');
-        } else {
-            $this->command->error('SQL file not found.');
-        }
+            AclSeeder::class, 
+        ]);
     }
 }

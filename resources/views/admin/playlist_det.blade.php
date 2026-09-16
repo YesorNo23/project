@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="mt-4"> 
-                    <h2 class="text-lg sm:text-2xl font-bold text-slate-900 leading-snug break-words">{{ $playlist->name }}</h2> 
+                    <h2 class="text-lg sm:text-2xl font-bold text-slate-900 leading-snug break-words">{{ $playlist->name ?? ""}}</h2> 
                     <p class="text-indigo-600 text-xs sm:text-sm font-medium mt-0.5">คอลเลกชันเพลย์ลิสต์</p>
                     
                     <div class="mt-4 p-3 sm:p-3.5 bg-slate-50 rounded-xl sm:rounded-2xl text-left border border-slate-100">
@@ -89,7 +89,7 @@
                 <div class="mt-5 pt-4 border-t border-slate-100 space-y-3 sm:space-y-4">
                     <div class="flex items-center justify-between text-xs sm:text-sm">
                         <span class="text-slate-400"><i class="bi bi-person me-1.5"></i> เจ้าของเพลย์ลิสต์</span>
-                        <span class="text-slate-700 font-bold truncate max-w-[150px] text-right">{{ $playlist->user->name }}</span>
+                        <span class="text-slate-700 font-bold truncate max-w-[150px] text-right">{{ $playlist->user->name ?? ""}}</span>
                     </div>
                     <div class="flex items-center justify-between text-xs sm:text-sm">
                         <span class="text-slate-400"><i class="bi bi-play-circle me-1.5"></i> จำนวนการฟังรวม</span>

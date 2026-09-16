@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ asset('image/favicon.ico') }}">
     <title>เข้าสู่ระบบ</title>
     <style>
         * { box-sizing: border-box; }
@@ -25,16 +26,22 @@
             padding: 2rem 1.75rem;
         }
         .icon-circle {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: #F4C0D1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 28px;
-        }
+    width: 120px;  /* 📌 ปรับให้ใหญ่ขึ้น (จากเดิม 64px) */
+    height: 120px; /* 📌 ปรับให้ใหญ่ขึ้น (จากเดิม 64px) */
+    border-radius: 50%;
+    background-color: #F4C0D1; /* ลบบรรทัดนี้ออกได้ถ้าไม่อยากให้เห็นสีพื้นหลัง */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.icon-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
         h3 {
             text-align: center;
             color: #4B1528;
@@ -93,12 +100,15 @@
             color: #993556;
         }
         .footer-text a { font-weight: 600; color: #72243E; }
+        
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="icon-circle">🌙</div>
+    <div class="icon-circle">
+        <img src="{{ asset('image/logo.png') }}">
+    </div>
     <h3>คลื่นเสียงบำบัด</h3>
 
     <form action="{{ route('login') }}" method="POST">
@@ -118,7 +128,6 @@
                 <input type="checkbox" id="showPassword" onclick="togglePassword()">
                 <label for="showPassword" style="margin:0; font-weight:400;">แสดงรหัสผ่าน</label>
             </span>
-            <a href="">ลืมรหัสผ่าน?</a>
         </div>
 
         <button type="submit">เข้าสู่ระบบ</button>

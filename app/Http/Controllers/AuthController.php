@@ -22,11 +22,11 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->remember)) {
+            $this->saveLog('เข้าสู่ระบบ','Login');
             $request->session()->regenerate();
             if(auth()->user()->usertype === 'SuperAdmin'){
                 return redirect()->route('admin.home');
             }
-
             return redirect()->route('homepage');
         }
 
@@ -37,10 +37,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $this->saveLog('ออกสู่ระบบ','Logout');
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+        
         return redirect()->route('login');
     }
 }

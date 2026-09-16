@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    const CAT_CONFIG = {
+    window.CAT_CONFIG = {
         เพิ่มสมาธิและโฟกัส: { label: 'Focus', icon: '🧠', color: '#4A90D9', desc: 'ช่วยให้จดจ่อและมีสมาธิมากขึ้น' },
         ปรับอารมณ์ให้ดีขึ้น: { label: 'Mood', icon: '😊', color: '#E91E8C', desc: 'ปรับอารมณ์ให้แจ่มใสขึ้น' },
         ผ่อนคลายทั่วไป: { label: 'Relax', icon: '🍃', color: '#2E7D32', desc: 'ผ่อนคลายกล้ามเนื้อและความคิด' },
@@ -104,6 +104,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         // ดึงชื่อหมวดจาก URL (เช่น ไฟล์ชื่อ focus.php จะได้คำว่า focus)
         const pathName = window.location.pathname;
         let currentCat = pathName.split('/').filter(Boolean).pop().replace('.php', '').toLowerCase();
+        const typetext = document.getElementById('typetext');
+        typetext.innerText ='';
+        typetext.innerText = currentCat;
         currentCat =  catlist[currentCat];
         
         try {
@@ -218,16 +221,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     // 5. ระบบเฉพาะ "หน้าหลัก" (user/index.blade.php)
     // ====================================================
     if (isMainPage) {
-
-    
-
         let allSongs = [];
 
-        // ─────────────────────────────────────────────────────────────
-        // Map ชื่อหมวดจาก DB (ภาษาไทย, มีอักขระพิเศษเช่น "/") ให้เป็น
-        // "slug" ภาษาอังกฤษที่ปลอดภัยสำหรับใช้เป็น DOM id / URL path
-        // ค่า key ฝั่งซ้าย ต้องตรงกับค่าที่มาจาก column cat_detail.name เป๊ะ
-        // ─────────────────────────────────────────────────────────────
         const CAT_SLUG_MAP = {
             "เพิ่มสมาธิและโฟกัส": "focus",
             "ปรับอารมณ์ให้ดีขึ้น": "mood",
@@ -444,4 +439,225 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     
+    const isHistoryPage = document.getElementById("historyGroups") !== null;
+
+    // ====================================================
+    // 6. ระบบเฉพาะห "น้าประวัติการฟัง"
+    // ====================================================
+    if (isHistoryPage) {
+        let historyOffset = 0;
+        const HISTORY_PAGE_SIZE = 15; // จำนวนเพลงต่อการโหลด 1 ครั้ง
+
+        async function loadHistory(reset = true) {
+            try {
+                const res = await fetch(`/get_history?offset=${historyOffset}&limit=${HISTORY_PAGE_SIZE}`, {
+                    headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" }
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+                // คาดหวังรูปแบบ: { total: 128, groups: [ { label: "วันนี้", items: [ {id, musicname, image, musicfile, cat, time} ] }, ... ], hasMore: true }
+
+                document.getElementById("historyStats").innerText = `ฟังไปแล้ว ${data.total} เพลงในเดือนนี้`;
+
+                const container = document.getElementById("historyGroups");
+                if (reset) container.innerHTML = "";
+
+                data.groups.forEach(group => {
+                    const dayBlock = document.createElement("div");
+
+                    const label = document.createElement("div");
+                    label.className = "history-day-label";
+                    label.innerText = group.label;
+                    dayBlock.appendChild(label);
+
+                    const grid = document.createElement("div");
+                    grid.className = "history-card-grid";
+
+                    group.items.forEach(song => {
+                        const imgUrl = song.image ? `/image/${song.image}` : "none";
+                        const card = document.createElement("div");
+                    
+                    card.className = 'history-card';
+                    card.innerHTML = `
+                        <div class="mcard-img" style="background-image: url('${imgUrl}');">
+                            <div class="mcard-ov">
+                                <button class="mcard-pbtn"><i class="fa-solid fa-play"></i></button>
+                            </div>
+                        </div>
+                        <div class="mcard-info">
+                            <div class="mcard-name">${song.musicname}</div>
+                            <div class="mcard-sub">${song.cat}</div>
+                        </div>
+                    `;
+
+                        card.addEventListener("click", () => {
+                            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, card, song.cat, group.items, group.items.indexOf(song));
+                        });
+                        grid.appendChild(card);
+                    });
+
+                    dayBlock.appendChild(grid);
+                    container.appendChild(dayBlock);
+                });
+
+                historyOffset += HISTORY_PAGE_SIZE;
+                document.getElementById("loadMoreHistoryBtn").style.display = data.hasMore ? "inline-block" : "none";
+
+            } catch (err) {
+                console.error("โหลดประวัติการฟังไม่สำเร็จ:", err);
+            }
+        }
+
+        loadHistory();
+
+        document.getElementById("loadMoreHistoryBtn")?.addEventListener("click", () => loadHistory(false));
+    }
+
+    const isPlaylistPage = document.getElementById("playlistGrid") !== null;
+
+    // ====================================================
+    // 7. ระบบเฉพาะ "หน้า PlayList"
+    // ====================================================
+    if (isPlaylistPage) {
+
+        // สีวนใช้กับแต่ละเพลย์ลิสต์ (ไม่มีรูปจริงก็ยังดูสวยได้)
+        const VINYL_COLORS = ["#D4537E", "#8B7BD8", "#8FD66B", "#6BB8D6", "#E8C24A"];
+
+        function colorForIndex(i) {
+            return VINYL_COLORS[i % VINYL_COLORS.length];
+        }
+
+        async function loadPlaylists() {
+        try {
+            const res = await fetch('/get_playlists', {
+                headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" }
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const playlists = await res.json();
+            document.getElementById("playlistCount").innerText = `${playlists.length} เพลย์ลิสต์`;
+
+            const grid = document.getElementById("playlistGrid");
+            grid.innerHTML = "";
+
+            playlists.forEach((pl, i) => {
+                const color = colorForIndex(i);
+                // ใช้ปกที่ตั้งเอง หรือรูปเพลงแรกในเพลย์ลิสต์ ถ้าไม่มีเลยค่อย fallback เป็นสีพื้น
+                const coverImg = pl.cover
+                    ? `/image/${pl.cover}`
+                    : (pl.songs && pl.songs[0] && pl.songs[0].image ? `/image/${pl.songs[0].image}` : "");
+
+                const card = document.createElement("div");
+                card.className = "playlist-vinyl-card";
+            card.innerHTML = `
+                    <div class="playlist-vinyl-stage">
+                        <div class="playlist-vinyl-square" style="background:${color};"></div>
+                        <div class="playlist-vinyl-cover" style="background-image:url('${coverImg}'); background-color:${color};"></div>
+                    </div>
+                    <div class="playlist-vinyl-name">${pl.name}</div>
+                    <div class="playlist-vinyl-count">${pl.song_count} เพลง</div>
+                `;
+                card.addEventListener("click", () => {
+                    window.location.href = `/playlist/${pl.id}`;
+                });
+                grid.appendChild(card);
+            });
+
+        } catch (err) {
+            console.error("โหลดเพลย์ลิสต์ไม่สำเร็จ:", err);
+        }
+    }
+
+        loadPlaylists();
+
+        document.getElementById("playlistMoreBtn")?.addEventListener("click", () => {
+            // เปิดเมนูตัวเลือกเพิ่มเติม (สร้างเพลย์ลิสต์ใหม่, จัดเรียง ฯลฯ) — ผูก modal ที่ออกแบบไว้ก่อนหน้าได้เลย
+            openCreatePlaylistModal();
+        });
+    }
+
+    const isPlaylistDetailPage = document.getElementById("pldSongRows") !== null;
+
+    // ====================================================
+    // 8. ระบบเฉพาะ "หน้า PlayList_Detail"
+    // ====================================================
+    if (isPlaylistDetailPage) {
+    const playlistId = window.currentPlaylistId;
+    let playlistSongs = [];
+
+        async function loadPlaylistDetail() {
+            try {
+                const res = await fetch(`/get_playlist/${playlistId}`, {
+                    headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" }
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+                // คาดหวังรูปแบบ: { id, name, description, cover, songs: [ {id, musicname, musicfile, image, cat, duration} ] }
+
+                playlistSongs = data.songs;
+
+                const coverImg = data.cover ? `/image/${data.cover}` : (data.songs[0] ? `/image/${data.songs[0].image}` : '');
+                document.getElementById("pldCover").style.backgroundImage = `url('${coverImg}')`;
+                document.getElementById("pldName").innerText = data.name;
+                document.getElementById("pldDesc").innerText = data.description || '';
+
+                const totalSec = data.songs.reduce((sum, s) => sum + (s.duration || 0), 0);
+                const mins = Math.round(totalSec / 60);
+                document.getElementById("pldMeta").innerText = `${data.songs.length} เพลง · ${mins} นาที`;
+
+                const rowsContainer = document.getElementById("pldSongRows");
+                rowsContainer.innerHTML = "";
+
+            data.songs.forEach((song, idx) => {
+        const imgUrl = song.image ? `/image/${song.image}` : "none";
+        const row = document.createElement("div");
+        row.className = "pld-song-row";
+        row.innerHTML = `
+            <span class="pld-col-num">${idx + 1}</span>
+            <div class="pld-col-thumb" style="background-image:url('${imgUrl}')"></div>
+            <div class="pld-col-info">
+                <div class="pld-col-name">${song.musicname}</div>
+                <div class="pld-col-sub">${song.cat ?? '-'} &middot; ${formatDuration(song.duration)}</div>
+            </div>
+        `;
+        row.addEventListener("click", () => {
+            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, row, song.cat, playlistSongs, idx);
+        });
+        rowsContainer.appendChild(row);
+    });
+
+            } catch (err) {
+                console.error("โหลดรายละเอียดเพลย์ลิสต์ไม่สำเร็จ:", err);
+            }
+        }
+
+        function formatDuration(sec) {
+            if (!sec) return '--:--';
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m}:${String(s).padStart(2, '0')}`;
+        }
+
+        loadPlaylistDetail();
+
+        document.getElementById("pldPlayBtn")?.addEventListener("click", () => {
+            if (playlistSongs.length === 0) return;
+            const song = playlistSongs[0];
+            const imgUrl = song.image ? `/image/${song.image}` : "none";
+            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, playlistSongs, 0);
+        });
+
+        document.getElementById("pldShuffleBtn")?.addEventListener("click", () => {
+            if (playlistSongs.length === 0) return;
+            const song = playlistSongs[Math.floor(Math.random() * playlistSongs.length)];
+            const imgUrl = song.image ? `/image/${song.image}` : "none";
+            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, playlistSongs, playlistSongs.indexOf(song));
+        });
+
+        document.getElementById("pldAddSongBtn")?.addEventListener("click", () => {
+            openCreatePlaylistModal(); // หรือ modal "เพิ่มเพลง" แยกต่างหาก ถ้าต้องการ
+        });
+    }
 });

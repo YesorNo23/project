@@ -5,38 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Music</title>
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/type.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/playlist.css') }}">
+
     <link rel="icon" type="image/x-icon" href="{{ asset('image/favicon.ico') }}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @stack('styles')
 
 </head>
 <body>
+    
     @include('user/header')
 
         
         @yield('content')
 
-        <!-- Music Player Modal (ป๊อปอัพเล่นเพลง) -->
-        <div class="modal-overlay" id="musicPlayerModal">
-            <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px 25px;">
-                <!-- ปุ่มกากบาทออก -->
-                <button class="close-modal-btn" onclick="closePlayerModal()">&times;</button>
-                
-                <!-- ชื่อเพลง -->
-                <h2 class="modal-title" id="playerSongName" style="margin-bottom: 20px; font-size: 20px;">ชื่อเพลง</h2>
-                
-                <!-- รูปภาพเพลง (ทำเป็นวงกลมให้เหมือนแผ่นเพลง) -->
-                <div id="playerImage" style="width: 220px; height: 220px; margin: 0 auto 30px auto; border-radius: 50%; box-shadow: 0 8px 20px rgba(0,0,0,0.2); background-size: cover; background-position: center; border: 4px solid #f0f0f0;"></div>
-                
-                <!-- เครื่องเล่นเสียง (มีปุ่มเล่น/หยุด และหลอดเวลาในตัว) -->
-                <audio id="mainAudioPlayer" controls style="width: 100%; outline: none;"></audio>
-            </div>
-        </div>
-        
+        @include('user/userprofile')
+        @include('user/changepassword')
+        @include('user/musicplayer')
+        @include('user/playlist_edit')
+        @include('user/addplaylist')
+        @include('user/createplaylist')
+
     @include('user/footter')
     <!-- ประเมินอารมณ์ -->
     <div class="modal-overlay" id="moodModal">
@@ -104,5 +102,8 @@
 </body>
 <script src="{{ asset('js/playermodal.js') }}"></script>
 <script src="{{ asset('js/script.js') }}"></script>
+
+    @stack('scripts')
+
 
 </html>

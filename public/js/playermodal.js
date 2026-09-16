@@ -80,8 +80,8 @@
     function setMoodTheme(cat) {
         document.body.classList.remove(...MOOD_THEMES);
         if (!cat) return;
-        const themeClass = MOOD_COLOR[cat].toLowerCase();
-        if (MOOD_THEMES.includes(themeClass)) {
+        const themeClass = MOOD_COLOR[cat];
+        if (themeClass && MOOD_THEMES.includes(themeClass)) {
             document.body.classList.add(themeClass);
         }
     }
@@ -98,7 +98,7 @@
     let currentPlaylist = null;
     let currentPlaylistIndex = -1;
 
-    const CATEGORY_ORDER = ['เพิ่มสมาธิ/โฟกัส', 'ปรับอารมณ์ให้ดีขึ้น', 'ผ่อนคลายทั่วไป', 'นอนหลับ', 'ลดความเครียด'];
+    const CATEGORY_ORDER = ['เพิ่มสมาธิและโฟกัส', 'ปรับอารมณ์ให้ดีขึ้น', 'ผ่อนคลายทั่วไป', 'นอนหลับ', 'ลดความเครียด'];
 
     let autoplayTimer = null;
     let autoplayCountdownInterval = null;
@@ -143,15 +143,16 @@
     }
 
     function buildNextUpChoices() {
-        const recommended = getRecommendedNext();
-        const recCat = recommended ? String(recommended.song.cat || currentPlayingCat || '') : null;
+    const recommended = getRecommendedNext();
+    const recCat = recommended ? String(recommended.song.cat || currentPlayingCat || '') : null;
 
-        const slots = [];
+    const slots = [];
         CATEGORY_ORDER.forEach(cat => {
             const pool = window.songPoolByCategory[cat] || [];
             if (pool.length === 0) return;
 
             if (recommended && cat === recCat) {
+                // หมวดนี้ตรงกับหมวดของเพลงแนะนำ -> ใช้เพลงแนะนำเป็น default
                 slots.push({ cat, song: recommended.song, queue: recommended.queue, index: recommended.index, isDefault: true });
             } else {
                 const song = pool[Math.floor(Math.random() * pool.length)];
@@ -159,6 +160,8 @@
             }
         });
 
+        // เผื่อ recCat ไม่ตรงกับ key ไหนใน CATEGORY_ORDER เป๊ะๆ (เช่น พิมพ์คนละแบบ)
+        // ให้ fallback ตั้ง slot แรกเป็น default แทน กันไม่มี default เลยจนเพลงไม่เล่นต่อ
         if (recommended && slots.length > 0 && !slots.some(s => s.isDefault)) {
             slots[0] = { ...slots[0], song: recommended.song, queue: recommended.queue, index: recommended.index, isDefault: true };
         }
@@ -181,7 +184,7 @@
         let defaultSlot = null;
 
         slots.forEach(slot => {
-            const cfg = CAT_CONFIG[slot.cat] || { label: slot.cat, icon: '🎵' };
+            const cfg = window.CAT_CONFIG?.[slot.cat] || { label: slot.cat, icon: '🎵' };
             const imgUrl = slot.song.image ? `/image/${slot.song.image}` : 'none';
 
             const card = document.createElement('button');
@@ -248,17 +251,19 @@
 
         playerTitle.innerText = songName;
         setBgImage(playerImg, imgUrl);
-        const fullUrl = fileUrl ? `/audio/${fileUrl}` : "none";
+        const fullUrl = fileUrl ? `https://github.com/YesorNo23/audio/releases/download/v.1/${fileUrl}` : "";        
         mainAudio.src = fullUrl;
+        
 
         playerModal.classList.add("show");
         mainAudio.play();
 
-        setMoodTheme(cat);
 
         currentPlayingCat = cat || currentPlayingCat;
         currentPlaylist = (queue && queue.length) ? queue : null;
         currentPlaylistIndex = currentPlaylist ? queueIndex : -1;
+
+        setMoodTheme(cat);
 
         if (currentActiveButton) currentActiveButton.querySelector("i").className = "fa-solid fa-play";
         if (currentActiveCard) currentActiveCard.classList.remove("playing");
@@ -304,8 +309,7 @@
     // ไปที่ POST /history/save เมื่อเพลงจบ, เปลี่ยนเพลง, ปิด modal,
     // หรือปิด/ออกจากหน้าเว็บกลางคัน
     // ====================================================
-    const HISTORY_SAVE_URL =
-        document.getElementById("app")?.dataset?.historySaveUrl || "/history/save";
+    const HISTORY_SAVE_URL = document.getElementById("app")?.dataset?.historySaveUrl || "/history/save";
     const MIN_TRACK_SECONDS = 1;
 
     let trackingMusicId = null;

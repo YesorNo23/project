@@ -88,7 +88,9 @@ class PlayListController extends Controller
         DB::transaction(function () use ($request, $playlist) {
             
             // ลบข้อมูลเพลงเก่าทั้งหมดในเพลย์ลิสต์นี้ออกก่อนเพื่อเตรียมบันทึกใหม่
-            $playlist->details()->delete();
+            if(count($playlist->music) > 0){
+                 $playlist->details()->delete();
+            }
 
             // ตรวจสอบว่าหน้าบ้านมีการส่งเพลงมาหรือไม่ (กรณีที่เคลียร์เพลงออกจนหมด)
             if ($request->has('music_ids') && is_array($request->music_ids)) {
@@ -122,7 +124,7 @@ class PlayListController extends Controller
         $playlist = PlayList::find($id); 
 
         if (empty($playlist)) {
-            return redirect()->back()->with('error', 'ไม่พบข้อมูลผู้ใช้งานที่ต้องการแก้ไข');
+            return redirect()->back()->with('error', 'ไม่พบข้อมูลที่ต้องการแก้ไข');
         }
 
         $playlist->status = $playlist->status > 0 ? 0 : 1;
@@ -130,4 +132,150 @@ class PlayListController extends Controller
         $message = $playlist->status > 0 ? 'เปลี่ยนสถานะเป็น Private เรียบร้อย' : 'เปลี่ยนสถานะเป็น In Active เรียบร้อย';
         return redirect()->back()->with('success', $message);
     }
+
+    public function get_playlists(Request $request)
+    {
+        $userId = auth()->id();
+
+        $playlists = Playlist::where('uid', $userId)
+            ->where('status','>',0)
+            ->withCount('music')
+            ->with(['music' => function ($q) {
+                $q->limit(4); // เอาแค่ 4 เพลงแรกไปทำปก collage
+            }])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $result = $playlists->map(function ($playlist) {
+            return [
+                'id'         => $playlist->id,
+                'name'       => $playlist->name,
+                'cover' => optional($playlist->music->first())->image,
+                'song_count' => $playlist->music_count,
+                'songs'      => $playlist->music->map(function ($music) {   // ← แก้ songs → music
+                    return [
+                        'id'    => $music->id,
+                        'image' => $music->image,
+                    ];
+                })->values(),
+            ];
+        });
+
+        return response()->json($result);
+    }
+
+   
+    public function get_playlist(Request $request, $id)
+    {
+        $userId = auth()->id();
+
+        $playlist = Playlist::where('uid', $userId)
+            ->where('id', $id)
+            ->with(['music' => function ($query) {
+                $query->where('music.status', '>',0);}])
+            ->firstOrFail();
+
+        $result = [
+            'id'          => $playlist->id,
+            'name'        => $playlist->name,
+            'description' => $playlist->detail,
+            'cover'       => optional($playlist->music->first())->image,
+            'songs'       => $playlist->music->map(function ($music) {
+                return [
+                    'id'         => $music->id,
+                    'musicname'  => $music->name,
+                    'musicfile'  => $music->file_path,
+                    'image'      => $music->image,
+                    'duration'   => $music->duration,
+                ];
+            })->values(),
+        ];
+
+        return response()->json($result);
+    }
+
+
+    public function update_playlist(Request $request, $id = null)
+    {
+        $userId = auth()->id();
+
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'song_ids'    => 'nullable|array',
+            'song_ids.*'  => 'integer|exists:music,id',
+        ]);
+
+        // อัปเดตอันเดิมถ้าเจอ (โดยเช็ก uid ด้วย) หรือ สร้างใหม่ถ้าไม่เจอ
+        $playlist = Playlist::updateOrCreate(
+            ['id' => $id, 'uid' => $userId], 
+            [                                
+                'uid'    => $userId, // ใส่ไว้เผื่อกรณีสร้างใหม่
+                'name'   => $validated['name'],
+                'detail' => $validated['description'] ?? null,
+                'status' => $playlist->status ?? '1'
+            ]
+        );
+
+        // ซิงค์ข้อมูลเพลง
+        if ($request->has('song_ids')) {
+            $playlist->music()->sync($validated['song_ids'] ?? []);
+        }
+
+        return response()->json([
+            'message'  => 'บันทึกเพลย์ลิสต์สำเร็จ',
+            'playlist' => [
+                'id'          => $playlist->id,
+                'name'        => $playlist->name,
+                'description' => $playlist->detail,
+            ],
+        ]);
+    }
+
+  
+    public function add_songs_to_playlist(Request $request, $id)
+    {
+        $userId = auth()->id();
+
+        $playlist = Playlist::where('uid', $userId)
+            ->where('id', $id)
+            ->firstOrFail(); // เจ้าของเพลย์ลิสต์เท่านั้นที่เพิ่มเพลงได้
+
+        $validated = $request->validate([
+            'song_ids'   => 'required|array|min:1',
+            'song_ids.*' => 'integer|exists:music,id',
+        ]);
+
+        // syncWithoutDetaching() = เพิ่มเพลงใหม่เข้าไป โดยไม่ลบเพลงเดิมที่มีอยู่แล้วออก
+        // และไม่ทำให้เพลงซ้ำ ถ้า id ไหนอยู่ในเพลย์ลิสต์แล้วจะข้ามไปเฉยๆ
+        $playlist->music()->syncWithoutDetaching($validated['song_ids']);
+
+        return response()->json([
+            'message'    => 'เพิ่มเพลงเข้าเพลย์ลิสต์สำเร็จ',
+            'song_count' => $playlist->music()->count(),
+        ]);
+    }
+
+    public function delete_playlist(Request $request, $id)
+    {
+        $userId = auth()->id();
+
+        $playlist = Playlist::where('uid', $userId)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $playlist->update([
+            'status' => 0
+        ]);
+
+        return response()->json([
+            'message'  => 'ลบเพลย์ลิสต์สำเร็จ',
+            'playlist' => [
+                'id'          => $playlist->id,
+                'name'        => $playlist->name,
+                'description' => $playlist->detail,
+            ],
+        ]);
+    }
+
 }

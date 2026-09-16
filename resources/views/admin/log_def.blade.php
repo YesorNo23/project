@@ -13,7 +13,7 @@
         <thead class="bg-slate-50/70 text-xs text-slate-500 uppercase tracking-widest border-b border-slate-100 block hidden sm:table-header-group">
             <tr class="block sm:table-row">
                 <th class="px-3 py-3.5 font-semibold sm:table-cell" style="width: 25%;">วัน/เวลา</th>
-                <th class="px-3 py-3.5 font-semibold sm:table-cell" style="width: 25%;">User ID</th>
+                <th class="px-3 py-3.5 font-semibold sm:table-cell" style="width: 25%;">User</th>
                 <th class="px-3 py-3.5 font-semibold sm:table-cell" style="width: 30%;">Action</th>
                 <th class="px-3 py-3.5 font-semibold sm:table-cell" style="width: 20%;">IP Address</th>
             </tr>
