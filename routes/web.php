@@ -105,32 +105,33 @@ use Illuminate\Support\Facades\Schema;
 
 Route::get('/init-database-now', function () {
     try {
-        // 1. เคลียร์ Cache ระบบ
         Artisan::call('config:clear');
         Artisan::call('route:clear');
 
-        // 2. ปิด FK Checks แล้วสั่ง Wipe DB + Migrate + Seed
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        
-        Artisan::call('migrate:fresh', [
-            '--force' => true
-        ]);
+        // ปิด FK Checks ใน Session เดียวกัน แล้วลบทุกตาราง
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+        $tables = DB::select('SHOW TABLES');
+        foreach ($tables as $table) {
+            $tableName = current((array)$table);
+            Schema::dropIfExists($tableName);
+        }
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
 
-        // 3. สร้างตาราง sessions เผื่อไว้ในฐานข้อมูลด้วย
+        // รัน Migration ใหม่ทั้งหมด
+        Artisan::call('migrate', ['--force' => true]);
+
+        // สร้างตาราง sessions เผื่อไว้
         if (!Schema::hasTable('sessions')) {
             Artisan::call('session:table');
             Artisan::call('migrate', ['--force' => true]);
         }
 
-        // 4. รัน Seeder
-        Artisan::call('db:seed', [
-            '--force' => true
-        ]);
+        // รัน Seeder
+        Artisan::call('db:seed', ['--force' => true]);
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        return '<h1>SUCCESS!</h1><p>Database and Sessions table created, seeded successfully.</p>';
+        return '<h1>SUCCESS!</h1><p>Database reset and seeded successfully.</p>';
     } catch (\Exception $e) {
         return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
     }
+
 });
