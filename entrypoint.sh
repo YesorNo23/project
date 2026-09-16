@@ -1,13 +1,15 @@
 #!/bin/bash
 
-# ปรับสิทธิ์เพื่อความปลอดภัย (กรณี Render จัดการไฟล์)
+# ตั้งค่า Port ของ Apache จากตัวแปร $PORT (ถ้าไม่มีจะใช้ 80)
+PORT=${PORT:-80}
+sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:${PORT}>/g" /etc/apache2/sites-available/000-default.conf
+
+# ปรับสิทธิ์โฟลเดอร์
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# รัน Migrate ทุกครั้งที่คอนเทนเนอร์สตาร์ท 
-# (ปลอดภัย เพราะถ้า Migrate ไปแล้ว Laravel จะไม่ทำซ้ำ)
+# รัน Migration
 php artisan migrate --force
 
-# *** ห้ามใส่คำสั่ง php artisan db:seed --force ตรงนี้เด็ดขาด ***
-
-# เริ่มการทำงานของ Apache
+# เริ่มทำงาน Apache
 exec apache2-foreground
