@@ -100,20 +100,33 @@ Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/init-database-now', function () {
     try {
-        // เคลียร์ Cache ให้ระบบพร้อม
         Artisan::call('config:clear');
-        Artisan::call('route:clear');
 
-        // ใช้ migrate:fresh ลบทุกตารางให้เกลี้ยง แล้วสร้างใหม่ + ลง Seed
-        Artisan::call('migrate:fresh', [
-            '--force' => true,
-            '--seed' => true
-        ]);
+        // 1. ปิดการเช็ค Foreign Key 
+        Schema::disableForeignKeyConstraints();
 
-        return '<h1>SUCCESS!</h1><p>Database cleared, migrated, and seeded successfully!</p>';
+        // 2. ดึงรายชื่อตารางทั้งหมดและสั่งลบทิ้ง (รวมถึง migrations)
+        $tables = DB::select('SHOW TABLES');
+        foreach ($tables as $table) {
+            $tableName = current((array)$table);
+            Schema::dropIfExists($tableName);
+        }
+
+        // 3. เปิดการเช็ค Foreign Key กลับมา
+        Schema::enableForeignKeyConstraints();
+
+        // 4. เริ่มรัน Migrate แบบปกติ (ไม่ใช่ fresh) เพราะ DB ว่างเปล่าแล้ว
+        Artisan::call('migrate', ['--force' => true]);
+        
+        // 5. ลงข้อมูล Seed
+        Artisan::call('db:seed', ['--force' => true]);
+
+        return '<h1>SUCCESS!</h1><p>Database hard-dropped, migrated and seeded successfully!</p>';
     } catch (\Exception $e) {
         return '<h1>ERROR!</h1><p>' . $e->getMessage() . '</p>';
     }
