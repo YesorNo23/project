@@ -13,6 +13,7 @@
     let currentActiveButton = null;
     let currentActiveCard = null;
 
+    window.songPoolByCategory={};
     // ====================================================
     // 2.0 ระบบแถบเลื่อนเวลาเพลง (seek bar)
     // ====================================================

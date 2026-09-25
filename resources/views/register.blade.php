@@ -78,7 +78,27 @@
             box-shadow: 0 0 0 3px rgba(212, 83, 126, 0.15);
         }
 
-        .check-wrap { display: flex; align-items: center; gap: 6px; color: #993556; font-size: 0.85rem; margin-top: 4px; }
+        .check-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #993556;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .check-wrap input[type="checkbox"] {
+            width: auto;
+            padding: 0;
+            margin: 0;
+            flex: none;
+            accent-color: #D4537E;
+        }
+        .check-wrap label {
+            margin: 0;
+            font-weight: 400;
+            white-space: nowrap;
+            cursor: pointer;
+        }
 
         .btn-row { display: flex; gap: 10px; margin-top: 2rem; }
         button {
@@ -170,11 +190,11 @@
             <div class="row-2">
                 <div class="field">
                     <label for="pw1">รหัสผ่าน</label>
-                    <input type="password" id="pw1" name="password" required>
+                    <input type="password" id="pw1" name="password" placeholder="รหัสผ่านอย่างน้อย 8 ตัวอักษร" required>
                 </div>
                 <div class="field">
                     <label for="pw2">ยืนยันรหัสผ่าน</label>
-                    <input type="password" id="pw2" name="password_confirmation" required>
+                    <input type="password" id="pw2" name="password_confirmation" placeholder="ยืนยันอีกครั้ง" required>
                 </div>
             </div>
 

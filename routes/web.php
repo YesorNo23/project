@@ -11,6 +11,8 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PlayListController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AssessmentController;
+
 
 // เส้นทางไปยังหน้า Dashbord ของ admin
 Route::get('admin',[HomePageController::class,'adminDashbord'])->middleware('auth')->middleware('CheckAcl:MusicManagement,1')->name('admin.home');
@@ -66,6 +68,7 @@ Route::post('admin/playlist/update/{id?}',[PlayListController::class,'update'])-
 Route::get('admin/playlist/del/{id}',[PlayListController::class,'del'])->middleware('CheckAcl:MusicManagement,2')->middleware('auth')->name('playlist.del');
 
 Route::get('admin/log/def',[LogController::class,'def'])->middleware('auth')->name('log.def'); // เส้นทางในแสดงข้อมูล ประวัติการใช้งานระบบทั้งหมด
+Route::get('admin/assessment/def',[AssessmentController::class,'def'])->middleware('auth')->name('assessment.def'); // เส้นทางในแสดงข้อมูล ประวัติการฟังคลื่นเสียงของผู้ใช้ทั้งหมด history_def.blade.php
 
 
 //หน้า login เข้าใช้งาน
@@ -98,4 +101,5 @@ Route::put('/password',[UserController::class,'changepassword'])->middleware('au
 Route::put('update_playlist/{id?}',[PlayListController::class,'update_playlist'])->middleware('auth')->name('playlist.update'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_to_playlist'])->middleware('auth')->name('songs.add'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
+
 

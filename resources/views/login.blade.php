@@ -109,7 +109,7 @@
     <div class="icon-circle">
         <img src="{{ asset('image/logo.png') }}">
     </div>
-    <h3>คลื่นเสียงบำบัด</h3>
+    <h3>SoundWave</h3>
 
     <form action="{{ route('login') }}" method="POST">
         @csrf

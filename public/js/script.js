@@ -8,10 +8,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // การกำหนด Path สำหรับ Fetch (เพื่อแก้ปัญหาที่ไฟล์อยู่คนละโฟลเดอร์)
     const fetchSongsUrl = '/get_songs';
-    const predictUrl    = isCategoryPage ? '../predict.php' : 'predict.php';
 
     
-
     // ====================================================
     // 3. ระบบประเมินอารมณ์ & AI แนะนำเพลง (Global)
     // ====================================================
@@ -19,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const moodModal = document.getElementById("moodModal");
     const closeModalBtn = document.getElementById("closeModalBtn");
     const submitMoodBtn = document.getElementById("submitMoodBtn");
+
 
     if (assessBtn) assessBtn.addEventListener("click", () => moodModal?.classList.add("show"));
     if (closeModalBtn) closeModalBtn.addEventListener("click", () => moodModal?.classList.remove("show"));
@@ -31,29 +30,58 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (submitMoodBtn) {
         submitMoodBtn.addEventListener("click", async () => {
             const getVal = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || null;
-            const answers = {
-                q1: getVal('q1'), q2: getVal('q2'), q3: getVal('q3'), q4: getVal('q4'), q5: getVal('q5')
-            };
+            const answers = { q1: getVal('q1'), q2: getVal('q2'), q3: getVal('q3'), q4: getVal('q4'), q5: getVal('q5') };
 
             if (Object.values(answers).some(v => !v)) {
                 alert('กรุณาตอบคำถามให้ครบทุกข้อก่อนนะคะ 😊'); return;
             }
 
-            submitMoodBtn.textContent = 'กำลังวิเคราะห์...'; submitMoodBtn.disabled = true;
+            submitMoodBtn.textContent = 'กำลังวิเคราะห์...'; 
+            submitMoodBtn.disabled = true;
 
             try {
-                const res = await fetch(predictUrl, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(answers)
+                const res = await fetch('/api/predict', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(answers)
                 });
                 const result = await res.json();
-                if (result.error) throw new Error(result.error);
                 
+                // 1. ตรวจสอบข้อผิดพลาดจาก Backend
+                if (result.error) throw new Error(result.error);
+
+                // 2. ปิดหน้าต่างแบบประเมิน
                 moodModal.classList.remove("show");
-                showRecommendation(result);
+
+                // 3. แสดงค่า % ความมั่นใจที่คำนวณจาก Random Forest ออกทาง Console
+                console.log(`🤖 AI ประเมินหมวด: ${result.category} | ความมั่นใจ: ${result.confidence}%`);
+
+                // 4. ดึงคลังเพลงในหมวดหมู่ที่ AI ประเมินได้
+                const catlist = {focus:'เพิ่มสมาธิและโฟกัส',
+                    mood:'ปรับอารมณ์ให้ดีขึ้น',
+                    relax:'ผ่อนคลายทั่วไป',
+                    sleep:'นอนหลับ',
+                    stress:'ลดความเครียด'};
+                const cat = String(result.category).toLowerCase();
+                const pool = songPoolByCategory[catlist[cat]] || [];
+
+                if (pool.length > 0) {
+                    // สุ่มเลือก 1 เพลงจากหมวดนั้น
+                    const randomIndex = Math.floor(Math.random() * pool.length);
+                    const song = pool[randomIndex];
+                    const imgUrl = song.image ? `/image/${song.image}` : "none";
+
+                    // เปิดป็อปอัพเครื่องเล่นและสั่งให้เพลงเริ่มเล่นทันที
+                    openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, catlist[cat], pool, randomIndex);
+                } else {
+                    alert(`AI แนะนำหมวด ${result.category} (ความมั่นใจ ${result.confidence}%) แต่ยังไม่มีไฟล์เพลงในระบบ`);
+                }
+
             } catch (err) {
                 alert('เกิดข้อผิดพลาด: ' + err.message);
             } finally {
-                submitMoodBtn.textContent = 'บันทึกข้อมูล'; submitMoodBtn.disabled = false;
+                submitMoodBtn.textContent = 'บันทึกข้อมูล'; 
+                submitMoodBtn.disabled = false;
             }
         });
     }
@@ -252,9 +280,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const grouped = await res.json();
 
                 allSongs = Object.values(grouped).flat();
-                songPoolByCategory = grouped;
+                window.songPoolByCategory = grouped;
 
-                const mySliderIds = ["1", "2", "3", "4"];
+                const mySliderIds = ["59", "89", "120", "2","139"];
                 let selectedSliderSongs = allSongs.filter((song) =>
                     mySliderIds.includes(String(song.id))
                 );

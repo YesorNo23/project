@@ -23,4 +23,9 @@ class PlayList extends Model
     {
         return $this->belongsToMany(Music::class, 'playlist_detail','playlistid', 'musicid')->withPivot('playlist_order','musicid')->orderByPivot('playlist_order', 'asc');
     }
+
+    public function details()
+    {
+        return $this->hasMany(PlayListDetail::class, 'playlistid', 'id');
+    }
 }

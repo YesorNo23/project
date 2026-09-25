@@ -89,7 +89,7 @@ class PlayListController extends Controller
             
             // ลบข้อมูลเพลงเก่าทั้งหมดในเพลย์ลิสต์นี้ออกก่อนเพื่อเตรียมบันทึกใหม่
             if(count($playlist->music) > 0){
-                 $playlist->details()->delete();
+                $playlist->details()->delete();
             }
 
             // ตรวจสอบว่าหน้าบ้านมีการส่งเพลงมาหรือไม่ (กรณีที่เคลียร์เพลงออกจนหมด)

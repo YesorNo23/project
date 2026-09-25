@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\FilterDetail;
 use App\Models\Music;
 use App\Models\History;
+use App\Models\Assessment;
+
 
 class HomePageController extends Controller
 {
@@ -23,6 +25,7 @@ class HomePageController extends Controller
         // ข้อมูลการฟังคลื่นเสียง และจำนวนครั้งการฟังรายวัน
         $dailyListens =  History::whereDate('created_at',date('Y-m-d'))->select('musicid')->selectRaw('count(*) as total')->groupBy('musicid')->orderByDesc('total')->get();
         
+        $totalAssessment = number_format(Assessment::count());
 
         // คำนวณหาหมวดหมู่คลื่นเสียงยอดนิยม
         $categories = FilterDetail::where('category_id',2)->withSum('music', 'play_count')->get();
@@ -46,6 +49,6 @@ class HomePageController extends Controller
         $durationdaily = History::whereNotNull('uid')->sum('play_duration');
         $AverageListen = $dailyUsers > 0 ? number_format(($durationdaily / 60)/ $dailyUsers,2) : 0;
         
-        return view('admin.index', compact('popularCategories', 'totalListens', 'userNum','AverageListen','dailyListens'));
+        return view('admin.index', compact('popularCategories', 'totalListens', 'userNum','AverageListen','dailyListens','totalAssessment'));
     }
 }

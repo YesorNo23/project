@@ -58,7 +58,7 @@
             <i class="bi bi-file-earmark-text text-rose-500"></i> จำนวนการทำแบบประเมิน
         </p>
         <div class="flex items-end gap-1 mb-2">
-            <h3 class="text-3xl font-bold text-slate-800">3</h3>
+            <h3 class="text-3xl font-bold text-slate-800">{{ $totalAssessment ?? 0 }}</h3>
             <span class="text-lg font-medium text-slate-500 mb-0.5">ครั้ง</span>
         </div>
        

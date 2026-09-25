@@ -24,17 +24,6 @@ class UserSeeder extends Seeder
                 'usertype' => 'SuperAdmin',
                 'status' => 1,
             ],
-            [
-                'id' => 2,
-                'password' => '$2y$12$x7xahR7xi57opjwMspetNeo9Z2Fd4UNcHfyyFiJ2gPL3165YQuUvW',
-                'name' => 'earth',
-                'surname' => 'Klawiset',
-                'email' => 'earthzahub01@gmail.com',
-                'birthdate' => '2026-09-03',
-                'gender' => 'male',
-                'usertype' => 'user',
-                'status' => 1,
-            ],
         ]);
     }
 }

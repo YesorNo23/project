@@ -1,0 +1,100 @@
+/* --- Footer ดีไซน์แบบ Photo-Centric --- */
+.site-footer {
+    position: relative;
+    width: 100%;
+    /* ใช้รูปภาพพื้นหลังเดียวกับเว็บ หรือเปลี่ยนลิงก์รูปภาพได้ตามต้องการ */
+    background-color: #f184da; 
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    padding: 60px 20px 30px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* เลเยอร์โปร่งแสงทับภาพ เพื่อให้ตัวหนังสืออ่านง่าย (Dark Glassmorphism) */
+.site-footer .footer-overlay {
+    position: absolute;
+    inset: 0;
+    /* ปรับค่าความเข้มของสีดำที่นี่ เพื่อให้ภาพเข้มพอที่จะตัดกับตัวหนังสือสีขาว */
+    background: rgba(0, 0, 0, 0.7); 
+    z-index: 1;
+    backdrop-filter: blur(5px); /* ใส่เบลอจางๆ ให้ดูมีมิติ */
+}
+
+.site-footer .footer-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 40px;
+}
+
+/* ส่วนแบรนด์/โลโก้ */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ff94b8; /* ใช้สีหลักของ Type Mood */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.footer-brand p {
+    font-size: 15px;
+    color: #e0e0e0;
+    max-width: 400px;
+    margin: 0 auto;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ส่วนลิงก์ */
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.footer-link {
+    color: #f0f0f0;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.2s, transform 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.footer-link:hover {
+    color: #ff94b8;
+    transform: translateY(-2px);
+}
+
+/* ส่วนลิขสิทธิ์ */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    padding-top: 20px;
+    margin-top: -10px; /* ขยับขึ้นเล็กน้อยให้กระชับ */
+}
+
+.footer-bottom p {
+    font-size: 13px;
+    color: #999;
+}

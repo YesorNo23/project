@@ -86,95 +86,6 @@ a {
     color: black;
 }
 
-/* --- Header --- */
-/* แก้ไข Header เพื่อให้ Dropdown ทำงานได้ */
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    position: relative; /* เพิ่มบรรทัดนี้: เพื่อให้ dropdown-content ยึดตำแหน่งจาก header */
-    z-index: 1000;      /* เพิ่มบรรทัดนี้: ให้ header อยู่บนสุดเสมอ */
-}
-
-header.header-container {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    z-index: 99999 !important;
-    background-color: var(--mood-solid) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
-    transition: background-color 1.5s ease-in-out !important;
-}
-
-.logo { font-size: 24px; font-weight: bold; color: #333; }
-.auth-buttons { display: flex; gap: 12px; }
-
-/* --- Buttons --- */
-.btn {
-    padding: 6px 20px;
-    border-radius: 20px;
-    background: transparent;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s;
-    background-color: #4a202a;
-}
-.btnn {
-    padding: 6px 20px;
-    border-radius: 20px;
-    background: transparent;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s;
-}
-.btn-outline { border: 3px solid #000000; color: #fdfdfd; }
-.btn-outline:hover { background-color: #f300be; }
-.btn-round { background-color: #4a202a; border: 2px solid #121212; color: #fdfdfd; padding: 8px 30px; font-weight: 500; }
-.btn-round:hover { background-color: #f300be; color: #ffffff; }
-
-.menu-btn {
-    background: transparent;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: 24px;
-    padding: 0;
-}
-
-.menu-btn:hover {
-    background: transparent;
-}
-
-
-/* --- Main Content --- */
-.main-content {
-    width: 100%;
-    margin: 0 auto;
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at center, var(--mood-light) 0%, transparent 60%),
-        linear-gradient(to bottom, var(--mood-top) 30%, var(--mood-mid) 45%, var(--mood-bottom) 100%);
-    transition: background 1s ease-in-out;
-    
-    /* 🛠️ ปรับเปลี่ยนและเพิ่ม 2 บรรทัดนี้ครับ */
-    background-size: 100% 100%;   /* ❌ หากของเดิมเป็นแบบนี้ หรือสัดส่วนเพี้ยน ให้เปลี่ยนเป็นด้านล่างแทนครับ */
-    background-size: cover;       /* คลุมพื้นที่แบบรักษาอัตราส่วนภาพ (Aspect Ratio) ไม่ให้ภาพเบี้ยว */
-    background-position: center top; /* 🛠️ เลื่อนตำแหน่งภาพให้ยึดจากขอบบนลงมา ภาพจะได้ไม่ถูกตัดส่วนหัว */
-    
-    background-repeat: no-repeat;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 100%;
-    padding: 0 20px;
-    
-    /* 🛠️ เปลี่ยนความสูงให้กระชับพอดีกับเนื้อหา แทนการปล่อยให้ยืดตามจอ */
-    min-height: 100vh;           /* ให้มีความสูงอย่างน้อยเต็มหน้าจอ */
-    justify-content: flex-start; 
-    padding-bottom: 30px;   
-}
 
 /* --- Slider Mechanism --- */
 .slider-wrapper {
@@ -203,7 +114,6 @@ header.header-container {
 
 /* แบนเนอร์สไลด์ใหญ่วางรูปพื้นหลัง */
 .big-slide-item {
-    
     min-width: 100%;
     height: 100%;
     display: flex;
@@ -252,7 +162,7 @@ header.header-container {
     color: transparent !important;
     
     /* ขยายขนาดปุ่มให้ครอบคลุมพื้นที่ด้านข้างของสไลด์เพื่อให้กดง่าย */
-    width: 300px;
+    width: 150px;
     height: 50%;
     position: absolute;
     top: 0;
@@ -361,50 +271,6 @@ header.header-container {
 
 .footer-buttons { display: flex; gap: 20px; margin-bottom: 40px; }
 
-/* --- Pop-up Modal --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.modal-overlay.show { display: flex; opacity: 1; }
-
-.modal-content {
-    background-color: #ffffff;
-    padding: 30px 25px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 85vh;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    position: relative;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-overlay.show .modal-content { transform: translateY(0); }
-
-.close-modal-btn {
-    position: absolute;
-    top: 15px; right: 20px;
-    background: none; border: none;
-    font-size: 28px; cursor: pointer;
-    color: #888; z-index: 10;
-}
-.close-modal-btn:hover { color: #333; }
-
-.modal-title { font-size: 22px; font-weight: 600; color: #0b0b0b; margin-bottom: 6px; text-align: center; }
-.modal-subtitle { font-size: 14px; color: #666; margin-bottom: 20px; text-align: center; padding: 0 10px; }
-
 .mood-options { overflow-y: auto; flex-grow: 1; padding-right: 10px; padding-left: 5px; }
 .quiz-list { padding-left: 20px; color: #333; }
 .quiz-list li { margin-bottom: 22px; font-weight: 600; font-size: 16px; }
@@ -429,58 +295,6 @@ header.header-container {
 #prevBtn, #nextBtn {
     display: none !important;
 }
-
-
-/*--- ดรอปดาว---*/
-.header-container {
-    position: relative; /* ให้ Header เป็นฐานอ้างอิง */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-}
-
-.dropdown {
-    position: relative; /* ให้ dropdown อ้างอิงจากตำแหน่งโลโก้ */
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-menu {
-    position: fixed;
-    top: 0;
-    left: -250px; /* ซ่อนไว้ข้างนอก */
-    width: 250px;
-    height: 100vh;
-    background-color: var(--mood-sidebar);
-    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-    z-index: 9998; /* อยู่ใต้โลโก้เล็กน้อยเพื่อให้โลโก้เด่น */
-    padding-top: 80px;
-    transition: left 0.4s ease, background-color 1s ease-in-out;
-}
-
-/* เมื่อเอาเมาส์ชี้ที่ .dropdown ทั้งก้อน ให้ Sidebar เลื่อนออกมา */
-.dropdown:hover .sidebar-menu {
-    left: 0;
-}
-
-.sidebar-menu a {
-    display: block;
-    padding: 20px 30px;
-    color: var(--mood-sidebar-text);
-    text-decoration: none;
-    font-size: 18px;
-    border-bottom: 1px solid var(--mood-sidebar-border);
-    transition: color 1s ease-in-out, border-color 1s ease-in-out;
-}
-
-.sidebar-menu a:hover {
-    background-color: #ff94b8;
-    color: white;
-}
-
-
-
 
 /* --- หมวดหมู่เพลงแบบแยกส่วน --- */
         .category-section {
@@ -606,9 +420,6 @@ min-width: 220px;
         flex: 0 0 calc((100% - 16px) / 2);
     }
 }
-
-
-
 
 /* ปุ่ม Play ตรงกลางการ์ด */
 .small-music-card .music-play-btn {
@@ -791,106 +602,7 @@ min-width: 220px;
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Footer ดีไซน์แบบ Photo-Centric --- */
-.site-footer {
-    position: relative;
-    width: 100%;
-    /* ใช้รูปภาพพื้นหลังเดียวกับเว็บ หรือเปลี่ยนลิงก์รูปภาพได้ตามต้องการ */
-    background-color: #f184da; 
-    background-size: cover;
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    color: #ffffff;
-    padding: 60px 20px 30px 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-/* เลเยอร์โปร่งแสงทับภาพ เพื่อให้ตัวหนังสืออ่านง่าย (Dark Glassmorphism) */
-.site-footer .footer-overlay {
-    position: absolute;
-    inset: 0;
-    /* ปรับค่าความเข้มของสีดำที่นี่ เพื่อให้ภาพเข้มพอที่จะตัดกับตัวหนังสือสีขาว */
-    background: rgba(0, 0, 0, 0.7); 
-    z-index: 1;
-    backdrop-filter: blur(5px); /* ใส่เบลอจางๆ ให้ดูมีมิติ */
-}
-
-.site-footer .footer-content {
-    position: relative;
-    z-index: 2;
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 40px;
-}
-
-/* ส่วนแบรนด์/โลโก้ */
-.footer-brand {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.footer-logo {
-    font-size: 28px;
-    font-weight: 700;
-    color: #ff94b8; /* ใช้สีหลักของ Type Mood */
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: center;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.footer-brand p {
-    font-size: 15px;
-    color: #e0e0e0;
-    max-width: 400px;
-    margin: 0 auto;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-}
-
-/* ส่วนลิงก์ */
-.footer-links {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 30px;
-    width: 100%;
-    padding: 0 20px;
-}
-
-.footer-link {
-    color: #f0f0f0;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.2s, transform 0.2s;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.footer-link:hover {
-    color: #ff94b8;
-    transform: translateY(-2px);
-}
-
-/* ส่วนลิขสิทธิ์ */
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    width: 100%;
-    padding-top: 20px;
-    margin-top: -10px; /* ขยับขึ้นเล็กน้อยให้กระชับ */
-}
-
-.footer-bottom p {
-    font-size: 13px;
-    color: #999;
-}
 /* --- หน้าประวัติการฟัง --- */
 .history-header { margin-bottom: 1.75rem; }
 .history-title { margin: 0 0 4px; font-size: 22px; color: #4B1528; }

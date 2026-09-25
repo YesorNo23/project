@@ -14,48 +14,48 @@
         </nav>
     </div>
 
-    <a href="{{ route('homepage') }}">
-        <div class="logo"><img src="{{ asset('image/favicon.ico') }}"></div>
+    <a href="/" class="header-logo">
+        <img class="header-logo-img" src="{{ asset('image/logo_homepage.png') }}">
     </a>
 
     @if(empty(auth()->id()))
         <div class="auth-buttons">
-            <a class="btnn btn-outline" href="{{route('regisfrom')}}">sign in</a>
+            <a class="btnn btn-outline" href="{{route('regisfrom')}}">sign up</a>
             <a class="btn btn-outline" href="{{route('login')}}">login</a>
         </div>
    @else
-<div class="user-menu">
-    <button class="user-icon-btn" onclick="toggleUserMenu()">
-        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-    </button>
-
-    <div class="user-dropdown" id="userDropdown">
-        <div class="user-dropdown-header">
-            <div class="user-avatar-sm">
+        <div class="user-menu">
+            <button class="user-icon-btn" onclick="toggleUserMenu()">
                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-            </div>
-            <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-email">{{ auth()->user()->email }}</div>
+            </button>
+
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-dropdown-header">
+                    <div class="user-avatar-sm">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                    <div>
+                        <div class="user-name">{{ auth()->user()->name }}</div>
+                        <div class="user-email">{{ auth()->user()->email }}</div>
+                    </div>
+                </div>
+
+                <button onclick="openProfileModal()" class="dropdown-item">โปรไฟล์ของฉัน</button>
+                <button onclick="openPasswordModal()" class="dropdown-item">เปลี่ยนรหัสผ่าน</button>
+                <a href="{{ route('historypage') }}" class="dropdown-item">ประวัติการฟัง</a>
+                <a href="{{ route('playlistpage') }}" class="dropdown-item">เพลย์ลิสต์ของฉัน</a>
+                <a href="{{ route('wavepage') }}" class="dropdown-item">สร้างคลืนเสียง</a>
+                
+
+                <div class="dropdown-divider"></div>
+
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="dropdown-item dropdown-item-danger">ออกจากระบบ</button>
+                </form>
             </div>
         </div>
-
-        <button onclick="openProfileModal()" class="dropdown-item">โปรไฟล์ของฉัน</button>
-        <button onclick="openPasswordModal()" class="dropdown-item">เปลี่ยนรหัสผ่าน</button>
-        <a href="{{ route('historypage') }}" class="dropdown-item">ประวัติการฟัง</a>
-        <a href="{{ route('playlistpage') }}" class="dropdown-item">เพลย์ลิสต์ของฉัน</a>
-        <a href="{{ route('wavepage') }}" class="dropdown-item">สร้างคลืนเสียง</a>
-        
-
-        <div class="dropdown-divider"></div>
-
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="dropdown-item dropdown-item-danger">ออกจากระบบ</button>
-        </form>
-    </div>
-</div>
-@endif
+    @endif
 </header>
 
 

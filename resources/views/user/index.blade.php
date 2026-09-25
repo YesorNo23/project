@@ -1,5 +1,5 @@
 @extends('user/layouts')
-
+@section('title','SoundWave')
 @section('content')
 
     <main class="main-content">

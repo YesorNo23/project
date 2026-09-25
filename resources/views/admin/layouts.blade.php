@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <title>@yield('title', 'NexusCore')</title>
+    <title>@yield('title', 'จัดการหลังบ้าน')</title>
     <link rel="shortcut icon" href="C:\Users\User\Downloads\ดีไซน์ที่ยังไม่ได้ตั้งชื่อ.png" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>

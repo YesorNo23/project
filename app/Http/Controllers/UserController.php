@@ -178,10 +178,10 @@ class UserController extends Controller
     {
         // การกำหนดรูปแบบข้อมูลที่กรอก
         $validated = $request->validate([
-            'name'      => 'required|between:1,255',
-            'surname'   => 'required|between:1,255',
+            'name'      => 'required|between:1,100',
+            'surname'   => 'required|between:1,100',
             'birthdate' => 'required|date',
-            'gender'    => 'required|in:male,female,other',
+            'gender'    => 'required',
         ], [
             // การแจ้งเตือนเมื่อข้อมูลที่กรอกไม่ตรงตามรูปแบบ
             'name.required'      => 'กรุณากรอกชื่อด้วยครับ',

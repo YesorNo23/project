@@ -1,3 +1,175 @@
+/* แก้ไข Header เพื่อให้ Dropdown ทำงานได้ */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    position: relative; /* เพิ่มบรรทัดนี้: เพื่อให้ dropdown-content ยึดตำแหน่งจาก header */
+    z-index: 1000;      /* เพิ่มบรรทัดนี้: ให้ header อยู่บนสุดเสมอ */
+}
+
+header.header-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 99999 !important;
+    background-color: var(--mood-solid) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    transition: background-color 1.5s ease-in-out !important;
+}
+
+ 
+/* โลโก้เป็นรูปภาพจริง (แทน icon font) ใช้ class นี้แทน .header-logo-icon */
+.header-logo-img {
+    height: 38px;       /* กำหนดความสูง ให้ width คำนวณตามสัดส่วนภาพเอง */
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.header-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+ 
+/* มือถือ: ย่อขนาดลง ซ่อนชื่อข้อความถ้าจอแคบมาก */
+@media (max-width: 480px) {
+    .header-logo-icon,
+    .header-logo-img {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+    }
+    .header-logo-text {
+        font-size: 15px;
+    }
+}
+@media (max-width: 600px) {
+    /* ซ่อนเฉพาะปุ่มแรก (sign up) ใน .auth-buttons — ใช้ :first-child
+       แทนการพึ่งชื่อ class เพราะ class ของปุ่ม sign up สะกดไม่ตรงกับ login (btnn vs btn) */
+    .auth-buttons a:first-child {
+        display: none;
+    }
+}
+.auth-buttons { display: flex; gap: 12px; }
+
+/* --- Buttons --- */
+.btn {
+    padding: 6px 20px;
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    background-color: #4a202a;
+}
+.btnn {
+    padding: 6px 20px;
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+.btn-outline { border: 3px solid #4a202a; color: #fdfdfd; }
+.btn-outline:hover { background-color: #f300be; }
+.btn-round { background-color: #4a202a; border: 2px solid #121212; color: #fdfdfd; padding: 8px 30px; font-weight: 500; }
+.btn-round:hover { background-color: #f300be; color: #ffffff; }
+
+.menu-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 0;
+}
+
+.menu-btn:hover {
+    background: transparent;
+}
+
+
+/* --- Main Content --- */
+.main-content {
+    width: 100%;
+    margin: 0 auto;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at center, var(--mood-light) 0%, transparent 60%),
+        linear-gradient(to bottom, var(--mood-top) 30%, var(--mood-mid) 45%, var(--mood-bottom) 100%);
+    transition: background 1s ease-in-out;
+    
+    /* 🛠️ ปรับเปลี่ยนและเพิ่ม 2 บรรทัดนี้ครับ */
+    background-size: 100% 100%;   /* ❌ หากของเดิมเป็นแบบนี้ หรือสัดส่วนเพี้ยน ให้เปลี่ยนเป็นด้านล่างแทนครับ */
+    background-size: cover;       /* คลุมพื้นที่แบบรักษาอัตราส่วนภาพ (Aspect Ratio) ไม่ให้ภาพเบี้ยว */
+    background-position: center top; /* 🛠️ เลื่อนตำแหน่งภาพให้ยึดจากขอบบนลงมา ภาพจะได้ไม่ถูกตัดส่วนหัว */
+    
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    padding: 0 20px;
+    
+    /* 🛠️ เปลี่ยนความสูงให้กระชับพอดีกับเนื้อหา แทนการปล่อยให้ยืดตามจอ */
+    min-height: 100vh;           /* ให้มีความสูงอย่างน้อยเต็มหน้าจอ */
+    justify-content: flex-start; 
+    padding-bottom: 30px;   
+}
+
+/*--- ดรอปดาว---*/
+.header-container {
+    position: relative; /* ให้ Header เป็นฐานอ้างอิง */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+.dropdown {
+    position: relative; /* ให้ dropdown อ้างอิงจากตำแหน่งโลโก้ */
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-menu {
+    position: fixed;
+    top: 0;
+    left: -250px; /* ซ่อนไว้ข้างนอก */
+    width: 250px;
+    height: 100vh;
+    background-color: var(--mood-sidebar);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    z-index: 9998; /* อยู่ใต้โลโก้เล็กน้อยเพื่อให้โลโก้เด่น */
+    padding-top: 80px;
+    transition: left 0.4s ease, background-color 1s ease-in-out;
+}
+
+/* เมื่อเอาเมาส์ชี้ที่ .dropdown ทั้งก้อน ให้ Sidebar เลื่อนออกมา */
+.dropdown:hover .sidebar-menu {
+    left: 0;
+}
+
+.sidebar-menu a {
+    display: block;
+    padding: 20px 30px;
+    color: var(--mood-sidebar-text);
+    text-decoration: none;
+    font-size: 18px;
+    border-bottom: 1px solid var(--mood-sidebar-border);
+    transition: color 1s ease-in-out, border-color 1s ease-in-out;
+}
+
+.sidebar-menu a:hover {
+    background-color: #ff94b8;
+    color: white;
+}
+
+/* user menu เมนูของผู้ใช้*/
 .user-menu { position: relative; }
 
 .user-icon-btn {

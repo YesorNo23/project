@@ -33,8 +33,11 @@
         <a href="{{ route('filter.def' )}}" class="sidebar-item {{ request()->is('admin/filter*') ? 'active':'' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
             <i class="bi bi-funnel"></i> ตัวกรองคลื่นเสียง
         </a>
+        <a href="{{ route('assessment.def' )}}" class="sidebar-item {{ request()->is('admin/assessment*') ? 'active':'' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
+            <i class="bi bi-file-earmark-text"></i> ประวัติการประเมินอารมณ์
+        </a>
         <a href="{{ route('playlist.def' )}}" class="sidebar-item {{ request()->is('admin/playlist*') ? 'active':'' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
-            <i class="bi bi-music-note-list"></i> play list
+            <i class="bi bi-music-note-list"></i> playlist
         </a>
         <a href="{{ route('history.def') }}" class="sidebar-item {{ request()->is('admin/history*') ? 'active':'' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-slate-600">
             <i class="bi bi-hourglass-split"></i> ประวัติการฟังคลื่นเสียง
