@@ -29,7 +29,7 @@ class AssessmentController extends Controller
 
         try {
             // 2. ส่งไปที่ Flask ด้วย Laravel HTTP Client
-            $response = Http::timeout(5)->post('https://model-sfzt.onrender.com/predict', $validated);
+            $response = Http::timeout(60)->post('https://model-sfzt.onrender.com/predict', $validated);
 
             // 3. เช็คว่า Flask ตอบสำเร็จไหม (ย้ายมาเช็คก่อน)
             if ($response->failed()) {

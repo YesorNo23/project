@@ -11,7 +11,7 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # รัน Migration
 php artisan migrate --force
-php artisan db:seed --force
+# php artisan db:seed --force
 
 # เริ่ม Apache
 exec apache2-foreground
