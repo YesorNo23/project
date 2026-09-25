@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql gd
 
 # 2. คัดลอก SSL Certificate
-COPY ca.pem /etc/ssl/certs/aiven-ca.pem
+COPY ca.pem /etc/ssl/certs/ca.pem
 
 # 3. เปิดใช้งาน Apache Rewrite Module
 RUN a2enmod rewrite
