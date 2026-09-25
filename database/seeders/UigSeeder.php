@@ -19,12 +19,6 @@ class UigSeeder extends Seeder
                 'ugid' => 1,
                 'status' => null,
             ],
-            [
-                'id' => 2,
-                'uid' => 2,
-                'ugid' => 2,
-                'status' => null,
-            ],
         ]);
     }
 }
