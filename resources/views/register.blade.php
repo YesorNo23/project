@@ -74,7 +74,28 @@
             outline: none;
             font-family: inherit;
             min-width: 0;
+            
+            /* แก้ไขปัญหา iOS Safari */
+            -webkit-appearance: none; /* ปิด UI ดั้งเดิมของ Safari */
+            appearance: none;
+            height: 42px; /* ล็อกความสูงให้เท่ากันทุกช่อง */
+            box-sizing: border-box;
         }
+        /* จัดระเบียบช่อง วันเกิด ให้แสดงผลถูกต้องใน Safari */
+        input[type="date"] {
+            position: relative;
+            -webkit-appearance: none;
+            line-height: 1.2;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23993556' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2rem;
+        }
+
         input:focus, select:focus {
             border-color: #D4537E;
             box-shadow: 0 0 0 3px rgba(212, 83, 126, 0.15);
@@ -133,7 +154,7 @@
 
         /* Fix: stack paired fields on narrow screens so text/placeholders
            don't get clipped or overlap each other */
-        @media (max-width: 420px) {
+        @media (max-width: 576px) {
             .card { padding: 1.75rem 1.25rem; }
             .row-2 { flex-direction: column; gap: 0; }
             .dot { width: 28px; height: 28px; font-size: 0.85rem; }

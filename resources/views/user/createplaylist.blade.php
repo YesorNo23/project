@@ -114,10 +114,9 @@
 </style>
 
 <script>
-    function openCreatePlaylistModal() {
-        document.getElementById('createPlaylistForm').reset();
-        
-        document.getElementById('createPlaylistModal').classList.add('show');
+   function openCreatePlaylistModal() {
+    document.getElementById('createPlaylistForm').reset();
+    document.getElementById('createPlaylistModal').classList.add('show');
     }
 
     function closeCreatePlaylistModal() {
@@ -128,24 +127,37 @@
         e.preventDefault();
 
         try {
-            const res = await fetch('/update_playlist/', {
+            // แก้ไข URL เป็น /update_playlist (ตัด / ท้ายออก)
+            const res = await fetch('/update_playlist', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    'Accept': 'application/json', // บังคับให้ตอบกลับเป็น JSON เสมอ
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
                 },
                 body: JSON.stringify({
                     name: document.getElementById('cpmName').value,
                     description: document.getElementById('cpmDesc').value
                 })
             });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const data = await res.json();
+
+            // ตรวจสอบสถานะ Response
+            if (!res.ok) {
+                // ดึงข้อความแจ้งเตือนจาก Laravel มาแสดง (เช่น กรอกข้อมูลไม่ครบ)
+                const errorMsg = data.errors 
+                    ? Object.values(data.errors).flat().join('\n') 
+                    : (data.message || `HTTP ${res.status}`);
+                throw new Error(errorMsg);
+            }
 
             closeCreatePlaylistModal();
-            window.location.reload(); // รีเฟรชให้เห็นเพลย์ลิสต์ใหม่ในหน้ารายการ
+            window.location.reload();
+
         } catch (err) {
             console.error('สร้างเพลย์ลิสต์ไม่สำเร็จ:', err);
-            alert('สร้างเพลย์ลิสต์ไม่สำเร็จ ลองใหม่อีกครั้ง');
+            alert('สร้างเพลย์ลิสต์ไม่สำเร็จ:\n' + err.message);
         }
     });
 

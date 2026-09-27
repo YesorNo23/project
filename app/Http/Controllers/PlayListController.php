@@ -195,7 +195,7 @@ class PlayListController extends Controller
     }
 
 
-    public function update_playlist(Request $request, $id = null)
+   public function update_playlist(Request $request, $id = null)
     {
         $userId = auth()->id();
 
@@ -206,18 +206,26 @@ class PlayListController extends Controller
             'song_ids.*'  => 'integer|exists:music,id',
         ]);
 
-        // อัปเดตอันเดิมถ้าเจอ (โดยเช็ก uid ด้วย) หรือ สร้างใหม่ถ้าไม่เจอ
-        $playlist = Playlist::updateOrCreate(
-            ['id' => $id, 'uid' => $userId], 
-            [                                
-                'uid'    => $userId, // ใส่ไว้เผื่อกรณีสร้างใหม่
+        // หาเพลย์ลิสต์เดิมของ User รายนี้ (ถ้าระบุ $id มา)
+        $playlist = $id ? Playlist::where('id', $id)->where('uid', $userId)->first() : null;
+
+        if ($playlist) {
+            // กรณีมีข้อมูลเดิม -> ทำการ Update
+            $playlist->update([
                 'name'   => $validated['name'],
                 'detail' => $validated['description'] ?? null,
-                'status' => $playlist->status ?? '1'
-            ]
-        );
+            ]);
+        } else {
+            // กรณีหาไม่เจอ หรือ $id เป็น null -> ทำการ Create ใหม่
+            $playlist = Playlist::create([
+                'uid'    => $userId,
+                'name'   => $validated['name'],
+                'detail' => $validated['description'] ?? null,
+                'status' => '1',
+            ]);
+        }
 
-        // ซิงค์ข้อมูลเพลง
+        // ซิงค์ข้อมูลเพลง (แก้ปัญหา sync เมื่อรับค่า array เปล่า)
         if ($request->has('song_ids')) {
             $playlist->music()->sync($validated['song_ids'] ?? []);
         }

@@ -107,7 +107,7 @@
 
 <div class="card">
     <div class="icon-circle">
-        <img src="{{ asset('image/logo.png') }}">
+        <img src="{{ asset('image/logo.PNG') }}">
     </div>
     <h3>SoundWave</h3>
 
