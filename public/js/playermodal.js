@@ -252,7 +252,9 @@
 
         playerTitle.innerText = songName;
         setBgImage(playerImg, imgUrl);
-        const fullUrl = fileUrl ? `https://github.com/YesorNo23/audio/releases/download/v.1/${fileUrl}` : "";        
+        
+        const AUDIO_BASE_URL = "/audio";
+const fullUrl = fileUrl ? `${AUDIO_BASE_URL}/${fileUrl}` : "";       
         mainAudio.src = fullUrl;
         
 

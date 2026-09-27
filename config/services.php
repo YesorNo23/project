@@ -34,5 +34,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'backblaze' => [
+    'key_id' => env('B2_KEY_ID'),
+    'application_key' => env('B2_APPLICATION_KEY'),
+    'bucket_name' => env('B2_BUCKET_NAME'),
+],
 
 ];

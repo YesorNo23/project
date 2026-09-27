@@ -12,6 +12,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PlayListController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\AudioStreamController;
 
 
 // เส้นทางไปยังหน้า Dashbord ของ admin
@@ -102,4 +103,6 @@ Route::put('update_playlist/{id?}',[PlayListController::class,'update_playlist']
 Route::post('/add_songs_to_playlist/{id}',[PlayListController::class,'add_songs_to_playlist'])->middleware('auth')->name('songs.add'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 Route::post('/delete_playlist/{id}',[PlayListController::class,'delete_playlist'])->middleware('auth')->name('playlist.delete'); // เส้นทางในการเปลี่ยนรหัสผ่านของผู้ใช้
 
-
+Route::get('/audio/{filename}', [AudioStreamController::class, 'stream'])
+    ->where('filename', '.*')
+    ->name('audio.stream');

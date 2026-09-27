@@ -133,8 +133,8 @@ class UserController extends Controller
         $request->validate([
         'email'    => 'required|email|unique:user,email',
         'password' => 'required|min:8',
-        'name'     => 'required|between:1,255',
-        'surname'  => 'required|between:1,255',
+        'name'     => 'required|between:1,100',
+        'surname'  => 'required|between:1,100',
         'birthdate'=> 'required',
         'gender'   => 'required',
 
@@ -145,9 +145,9 @@ class UserController extends Controller
         'email.unique'       => 'email นี้มีผู้ใช้แล้ว',
         'password.required'  => 'ต้องตั้งรหัสผ่านอย่างน้อย 8 ตัวอักษร',
         'name.required'      => 'กรุณากรอกชื่อด้วยครับ',
-        'name.between'       => 'กรอกไม่เกิน 255 ตัวอักษร',
+        'name.between'       => 'กรอกไม่เกิน 100 ตัวอักษร',
         'surname.required'   => 'กรุณากรอกนามสกุลด้วยครับ',
-        'surname.between'    => 'กรอกไม่เกิน 255 ตัวอักษร',
+        'surname.between'    => 'กรอกไม่เกิน 100 ตัวอักษร',
         'birthdate.required' => 'กรุณาระบุวันเกิดด้วยครับ',
         'gender.required'    => 'กรุณาระบุเพศด้วยครับ',
     ]);
@@ -185,9 +185,9 @@ class UserController extends Controller
         ], [
             // การแจ้งเตือนเมื่อข้อมูลที่กรอกไม่ตรงตามรูปแบบ
             'name.required'      => 'กรุณากรอกชื่อด้วยครับ',
-            'name.between'       => 'กรอกไม่เกิน 255 ตัวอักษร',
+            'name.between'       => 'กรอกไม่เกิน 100 ตัวอักษร',
             'surname.required'   => 'กรุณากรอกนามสกุลด้วยครับ',
-            'surname.between'    => 'กรอกไม่เกิน 255 ตัวอักษร',
+            'surname.between'    => 'กรอกไม่เกิน 100 ตัวอักษร',
             'birthdate.required' => 'กรุณาระบุวันเกิดด้วยครับ',
             'birthdate.date'     => 'รูปแบบวันเกิดไม่ถูกต้อง',
             'gender.required'    => 'กรุณาระบุเพศด้วยครับ',

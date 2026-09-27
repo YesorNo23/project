@@ -42,6 +42,7 @@
             font-weight: 600;
             color: #993556;
             transition: 0.3s;
+            flex-shrink: 0;
         }
         .dot.active { background: #D4537E; color: #FBEAF0; }
         .line { width: 60px; height: 3px; background: #F4C0D1; margin: 0 10px; border-radius: 2px; }
@@ -55,7 +56,7 @@
         .step-sub { text-align: center; color: #993556; font-size: 0.85rem; margin: 0 0 1.5rem; }
 
         .row-2 { display: flex; gap: 12px; }
-        .field { margin-bottom: 1rem; flex: 1; }
+        .field { margin-bottom: 1rem; flex: 1; min-width: 0; }
         label {
             display: block;
             font-size: 0.85rem;
@@ -72,6 +73,7 @@
             background: #FFFFFF;
             outline: none;
             font-family: inherit;
+            min-width: 0;
         }
         input:focus, select:focus {
             border-color: #D4537E;
@@ -128,6 +130,15 @@
             color: #993556;
         }
         .footer-text a { font-weight: 600; color: #72243E; text-decoration: none; }
+
+        /* Fix: stack paired fields on narrow screens so text/placeholders
+           don't get clipped or overlap each other */
+        @media (max-width: 420px) {
+            .card { padding: 1.75rem 1.25rem; }
+            .row-2 { flex-direction: column; gap: 0; }
+            .dot { width: 28px; height: 28px; font-size: 0.85rem; }
+            .line { width: 40px; margin: 0 6px; }
+        }
     </style>
 </head>
 <body>
@@ -165,7 +176,7 @@
                 <div class="field">
                     <label for="gender">เพศ</label>
                     <select id="gender" name="gender" required>
-                        <option value="" selected disabled>เลือกเพศ</option>
+                        <option value="" disabled selected hidden>เลือกเพศ</option>
                         <option value="male">ชาย</option>
                         <option value="female">หญิง</option>
                         <option value="other">อื่นๆ</option>
@@ -190,7 +201,7 @@
             <div class="row-2">
                 <div class="field">
                     <label for="pw1">รหัสผ่าน</label>
-                    <input type="password" id="pw1" name="password" placeholder="รหัสผ่านอย่างน้อย 8 ตัวอักษร" required>
+                    <input type="password" id="pw1" name="password" placeholder="อย่างน้อย 8 ตัวอักษร" required>
                 </div>
                 <div class="field">
                     <label for="pw2">ยืนยันรหัสผ่าน</label>
