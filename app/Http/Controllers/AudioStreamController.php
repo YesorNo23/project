@@ -59,9 +59,11 @@ class AudioStreamController extends Controller
         }
 
         return response()->stream(function () use ($body) {
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
             while (!$body->eof()) {
-                echo $body->read(1024 * 64); // 64KB ต่อ chunk
-                ob_flush();
+                echo $body->read(1024 * 64);
                 flush();
             }
         }, $status, $responseHeaders);
