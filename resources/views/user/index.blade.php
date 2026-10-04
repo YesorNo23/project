@@ -36,7 +36,7 @@
             <!-- ปุ่มด้านล่าง -->
             <div class="footer-buttons">
                 <button class="btn btn-round" id="randomBtn">สุ่ม</button>
-                <button class="btn btn-round" id="assessBtn">ประเมินอารมณ์</button>
+                <button class="btn btn-round" id="assessBtn">เลือกเป้าหมายการใช้งาน</button>
             </div>
         
     </main>

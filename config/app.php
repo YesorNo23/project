@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'storage_url' => env('storage_cloud_url','/audio'),
+
 ];

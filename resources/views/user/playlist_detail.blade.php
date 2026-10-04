@@ -34,8 +34,8 @@
                     <!-- เส้นคั่นแบบในรูป -->
                     <div class="pld-dropdown-divider"></div>
 
-                    <!-- ปุ่ม Action สีแดง -->
-<button type="button" class="pld-dropdown-item danger" onclick="openConfirmDeleteModal(window.currentPlaylistId)">
+                            <!-- ปุ่ม Action สีแดง -->
+                            <button type="button" class="pld-dropdown-item danger" onclick="openConfirmDeleteModal(window.currentPlaylistId)">
                             <i class="bi bi-trash"></i> ลบเพลย์ลิสต์
                     </button>
                 </div>

@@ -467,11 +467,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     
-    const isHistoryPage = document.getElementById("historyGroups") !== null;
+    
 
     // ====================================================
     // 6. ระบบเฉพาะห "น้าประวัติการฟัง"
     // ====================================================
+    const isHistoryPage = document.getElementById("historyGroups") !== null;
     if (isHistoryPage) {
         let historyOffset = 0;
         const HISTORY_PAGE_SIZE = 15; // จำนวนเพลงต่อการโหลด 1 ครั้ง
@@ -611,8 +612,21 @@ document.addEventListener("DOMContentLoaded", async function() {
     // 8. ระบบเฉพาะ "หน้า PlayList_Detail"
     // ====================================================
     if (isPlaylistDetailPage) {
-    const playlistId = window.currentPlaylistId;
-    let playlistSongs = [];
+        const playlistId = window.currentPlaylistId;
+        let playlistSongs = [];
+
+        window.isPlaylistPlayback = true;   // เปิดโหมด playlist
+        window.playlistRows = [];           // เก็บ element แต่ละแถวไว้ไฮไลต์
+
+        // เล่นเพลงตาม index ใน playlist (ใช้ร่วมกันทุกปุ่ม)
+        function playFromPlaylist(idx, container = null) {
+            const song = playlistSongs[idx];
+            if (!song) return;
+            const imgUrl = song.image ? `/image/${song.image}` : "none";
+            openPlayerModal(song.musicname, song.musicfile, imgUrl, null,
+                container ?? window.playlistRows[idx] ?? null,
+                song.cat, playlistSongs, idx, song.id);
+        }
 
         async function loadPlaylistDetail() {
             try {
@@ -638,24 +652,25 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const rowsContainer = document.getElementById("pldSongRows");
                 rowsContainer.innerHTML = "";
 
-            data.songs.forEach((song, idx) => {
-        const imgUrl = song.image ? `/image/${song.image}` : "none";
-        const row = document.createElement("div");
-        row.className = "pld-song-row";
-        row.innerHTML = `
-            <span class="pld-col-num">${idx + 1}</span>
-            <div class="pld-col-thumb" style="background-image:url('${imgUrl}')"></div>
-            <div class="pld-col-info">
-                <div class="pld-col-name">${song.musicname}</div>
-                <div class="pld-col-sub">${song.cat ?? '-'} &middot; ${formatDuration(song.duration)}</div>
-            </div>
-        `;
-        row.addEventListener("click", () => {
-            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, row, song.cat, playlistSongs, idx);
-        });
-        rowsContainer.appendChild(row);
-    });
+                rowsContainer.innerHTML = "";
+                window.playlistRows = [];
 
+                data.songs.forEach((song, idx) => {
+                    const imgUrl = song.image ? `/image/${song.image}` : "none";
+                    const row = document.createElement("div");
+                    row.className = "pld-song-row";
+                    row.innerHTML = `
+                        <span class="pld-col-num">${idx + 1}</span>
+                        <div class="pld-col-thumb" style="background-image:url('${imgUrl}')"></div>
+                        <div class="pld-col-info">
+                            <div class="pld-col-name">${song.musicname}</div>
+                            <div class="pld-col-sub">${song.cat ?? '-'} &middot; ${formatDuration(song.duration)}</div>
+                        </div>
+                    `;
+                    row.addEventListener("click", () => playFromPlaylist(idx, row));
+                    rowsContainer.appendChild(row);
+                    window.playlistRows.push(row);
+                });
             } catch (err) {
                 console.error("โหลดรายละเอียดเพลย์ลิสต์ไม่สำเร็จ:", err);
             }
@@ -670,19 +685,15 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         loadPlaylistDetail();
 
-        document.getElementById("pldPlayBtn")?.addEventListener("click", () => {
-            if (playlistSongs.length === 0) return;
-            const song = playlistSongs[0];
-            const imgUrl = song.image ? `/image/${song.image}` : "none";
-            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, playlistSongs, 0);
-        });
+    document.getElementById("pldPlayBtn")?.addEventListener("click", () => {
+        if (playlistSongs.length === 0) return;
+        playFromPlaylist(0);
+    });
 
-        document.getElementById("pldShuffleBtn")?.addEventListener("click", () => {
-            if (playlistSongs.length === 0) return;
-            const song = playlistSongs[Math.floor(Math.random() * playlistSongs.length)];
-            const imgUrl = song.image ? `/image/${song.image}` : "none";
-            openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, playlistSongs, playlistSongs.indexOf(song));
-        });
+    document.getElementById("pldShuffleBtn")?.addEventListener("click", () => {
+        if (playlistSongs.length === 0) return;
+        playFromPlaylist(Math.floor(Math.random() * playlistSongs.length));
+    });
 
         document.getElementById("pldAddSongBtn")?.addEventListener("click", () => {
             openCreatePlaylistModal(); // หรือ modal "เพิ่มเพลง" แยกต่างหาก ถ้าต้องการ

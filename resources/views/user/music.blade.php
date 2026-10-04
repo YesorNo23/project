@@ -43,7 +43,7 @@
  
         <div class="foot">
             <button class="fbtn pri" id="randomBtn"><i class="fa-solid fa-shuffle"></i>สุ่มเพลง</button>
-            <button class="fbtn sec" id="assessBtn"><i class="fa-solid fa-heart-pulse"></i>ประเมินอารมณ์</button>
+            <button class="fbtn sec" id="assessBtn"><i class="fa-solid fa-heart-pulse"></i>เลือกเป้าหมายการใช้งาน</button>
         </div>
     </div>
 </div>

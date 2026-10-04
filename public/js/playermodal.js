@@ -143,11 +143,41 @@
         return null;
     }
 
-    function buildNextUpChoices() {
-    const recommended = getRecommendedNext();
-    const recCat = recommended ? String(recommended.song.cat || currentPlayingCat || '') : null;
+    // เล่นวนซ้ำเมื่อจบเพลย์ลิสต์ไหม (ตั้ง false ถ้าอยากให้หยุดเมื่อเพลงสุดท้ายจบ)
+    const PLAYLIST_LOOP = true;
+    const PLAYLIST_NEXT_CHOICES = 5; // จำนวนเพลงถัดไปที่แสดงให้เลือก
 
-    const slots = [];
+    // ตัวเลือกเพลงถัดไปตามลำดับใน playlist: เพลงถัดไปคือ default (นับถอยหลัง)
+    function getPlaylistNextChoices() {
+        if (!currentPlaylist || currentPlaylist.length === 0 || currentPlaylistIndex < 0) return [];
+
+        const total = currentPlaylist.length;
+        const count = Math.min(PLAYLIST_NEXT_CHOICES, total > 1 ? total - 1 : 1);
+        const slots = [];
+
+        for (let i = 1; i <= count; i++) {
+            let index = currentPlaylistIndex + i;
+            if (index >= total) {
+                if (!PLAYLIST_LOOP) break;
+                index = index % total;
+            }
+            slots.push({
+                cat: currentPlaylist[index].cat,
+                song: currentPlaylist[index],
+                queue: currentPlaylist,
+                index,
+                isDefault: i === 1
+            });
+        }
+        return slots;
+    }
+
+    function buildNextUpChoices() {
+        if (window.isPlaylistPlayback) return getPlaylistNextChoices();
+        const recommended = getRecommendedNext();
+        const recCat = recommended ? String(recommended.song.cat || currentPlayingCat || '') : null;
+
+        const slots = [];
         CATEGORY_ORDER.forEach(cat => {
             const pool = window.songPoolByCategory[cat] || [];
             if (pool.length === 0) return;
@@ -174,18 +204,24 @@
         const slots = buildNextUpChoices();
         if (slots.length === 0) return null;
 
+       // (a) หัวข้อ: เปลี่ยนข้อความตามโหมด
+        const headerText = window.isPlaylistPlayback
+            ? '🎧 เพลงถัดไปในเพลย์ลิสต์'
+            : '🎧 เลือกเพลงถัดไป (สุ่มมาให้หมวดละ 1 เพลง)';
+
         nextUpEl.innerHTML = `
             <div class="next-up-header">
-                <span>🎧 เลือกเพลงถัดไป (สุ่มมาให้หมวดละ 1 เพลง)</span>
+                <span>${headerText}</span>
                 <button type="button" id="dismissNextUpBtn" title="ปิด">&times;</button>
             </div>
             <div class="next-up-row"></div>
         `;
+
         const row = nextUpEl.querySelector('.next-up-row');
         let defaultSlot = null;
 
         slots.forEach(slot => {
-            const cfg = window.CAT_CONFIG?.[slot.cat] || { label: slot.cat, icon: '🎵' };
+            const cfg = window.CAT_CONFIG?.[slot.cat] || { label: slot.cat ?? 'เพลย์ลิสต์', icon: '🎵' };
             const imgUrl = slot.song.image ? `/image/${slot.song.image}` : 'none';
 
             const card = document.createElement('button');
@@ -237,9 +273,8 @@
     function playQueueSong(queue, index, song) {
         if (!song) return;
         const imgUrl = song.image ? `/image/${song.image}` : "none";
-        // ★ แก้แล้ว: เพิ่ม song.id เป็น argument ตัวสุดท้าย
-        // กันเคส queue เป็น null (การ์ด next-up ที่ไม่ใช่ default) ไม่ให้ musicid หลุดเป็น null
-        window.openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, queue, index, song.id);
+        const rowEl = window.isPlaylistPlayback ? (window.playlistRows?.[index] ?? null) : null;
+        window.openPlayerModal(song.musicname, song.musicfile, imgUrl, null, rowEl, song.cat, queue, index, song.id);
     }
 
     function openPlayerModal(songName, fileUrl, imgUrl, button = null, container = null, cat = null, queue = null, queueIndex = -1, musicId = null) {
@@ -253,8 +288,8 @@
         playerTitle.innerText = songName;
         setBgImage(playerImg, imgUrl);
         
-        const AUDIO_BASE_URL = "/audio";
-const fullUrl = fileUrl ? `${AUDIO_BASE_URL}/${fileUrl}` : "";       
+        const AUDIO_BASE_URL = window.AppConfig.storageUrl;
+        const fullUrl = fileUrl ? `${AUDIO_BASE_URL}/${fileUrl}` : "";       
         mainAudio.src = fullUrl;
         
 
