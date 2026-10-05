@@ -226,8 +226,8 @@
 </head>
 <body>
 @include('user/header')
-@include('user/userprofile')
-@include('user/changepassword')
+@include('user/pop_up/userprofile')
+@include('user/pop_up/changepassword')
 
 <canvas id="stage"></canvas>
 <div id="tintLayer"></div>
