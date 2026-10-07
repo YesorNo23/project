@@ -7,6 +7,8 @@ use App\Models\Music;
 use App\Models\Filter;
 use App\Services\B2Client;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+
 
 class MusicController extends Controller
 {
@@ -55,9 +57,40 @@ class MusicController extends Controller
         $music->status = $request->status ?? 1;
 
         if ($request->hasFile('image')) {
-            $imageName = time() . '_img.' . $request->image->extension();
-            $request->image->move(public_path('image'), $imageName);
-            $music->image = $imageName;
+            $file = $request->file('image');
+            
+            // 1. ตั้งชื่อไฟล์ใหม่
+            $imageName = time() . '_img.' . $file->getClientOriginalExtension();
+            
+            // 2. ระบุชื่อ Public Bucket ที่สร้างไว้ใน Supabase
+            $bucketName = 'image'; 
+
+            $supabaseUrl = config('services.supabase.url'); // หรือ env('SUPABASE_URL')
+            $supabaseKey = config('services.supabase.key'); // หรือ env('SUPABASE_SERVICE_KEY')
+
+            // Endpoint สำหรับอัปโหลดไฟล์ใน Supabase
+            $endpoint = "{$supabaseUrl}/storage/v1/object/{$bucketName}/{$imageName}";
+
+            // 3. ส่งไฟล์ไปยัง Supabase Storage ผ่าน HTTP POST
+            $response = Http::timeout(300)->withHeaders([
+                'Authorization' => 'Bearer ' . $supabaseKey,
+                'apiKey'        => $supabaseKey,
+                'Content-Type'  => $file->getMimeType(),
+                'x-upsert'      => 'true', // กำหนดเป็น true เพื่อให้อัปโหลดทับไฟล์เดิมได้หากชื่อซ้ำ
+            ])->withBody(
+                file_get_contents($file->getRealPath()), 
+                $file->getMimeType()
+            )->post($endpoint);
+
+            // 4. ตรวจสอบผลการอัปโหลด
+            if ($response->successful()) {
+                // สร้าง Public URL เพื่อนำไปบันทึกลง Database
+                $publicUrl = "{$supabaseUrl}/storage/v1/object/public/{$bucketName}/{$imageName}";
+                
+                $music->image = $imageName; // เก็บบันทึกเต็ม URL ลง DB (เช่น https://xxxx.supabase.co/storage/v1/object/public/music-images/170000_img.png)
+            } else {
+                return back()->withErrors('ไม่สามารถอัปโหลดรูปภาพไปยัง Supabase ได้');
+            }
         }
 
         if ($request->hasFile('file_path')) {

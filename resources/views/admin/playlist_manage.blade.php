@@ -64,7 +64,7 @@
                                     </div>
                                     
                                     <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200 shadow-sm relative">
-                                        <img src="{{ asset('image/' . $music->image) }}" onerror="this.src='https://placehold.co/150/e2e8f0/64748b?text=No+Image'" class="w-full h-full object-cover">
+                                        <img src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $music->image }}" onerror="this.src='https://placehold.co/150/e2e8f0/64748b?text=No+Image'" class="w-full h-full object-cover">
                                     </div>
                                     
                                     <div class="flex-1 min-w-0 pl-0.5">
@@ -113,7 +113,7 @@
                                     </div>
                                     
                                     <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200">
-                                        <img src="{{ asset('image/' . $music->image) }}" onerror="this.src='https://placehold.co/150/e2e8f0/64748b?text=No+Image'" class="w-full h-full object-cover">
+                                        <img src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $music->image }}" onerror="this.src='https://placehold.co/150/e2e8f0/64748b?text=No+Image'" class="w-full h-full object-cover">
                                     </div>
                                     
                                     <div class="flex-1 min-w-0 pl-0.5">

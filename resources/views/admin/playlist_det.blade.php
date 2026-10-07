@@ -66,7 +66,7 @@
                 
                 <div class="relative mt-2 sm:mt-4">
                     @if($playlist->image)
-                        <img src="{{ asset('image/' . $playlist->image) }}" class="w-32 h-32 sm:w-48 sm:h-48 rounded-xl sm:rounded-2xl mx-auto border-4 border-white shadow-md sm:shadow-xl object-cover">
+                        <img src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $playlist->image }}" class="w-32 h-32 sm:w-48 sm:h-48 rounded-xl sm:rounded-2xl mx-auto border-4 border-white shadow-md sm:shadow-xl object-cover">
                     @else
                         <div class="w-32 h-32 sm:w-48 sm:h-48 rounded-xl sm:rounded-2xl mx-auto border-4 border-white shadow-md sm:shadow-xl bg-slate-100 flex items-center justify-center">
                             <i class="bi bi-music-note-list text-4xl sm:text-5xl text-slate-300"></i>
@@ -160,7 +160,7 @@
                                     <td class="py-3 px-2 align-middle overflow-hidden">
                                         <div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
                                             <div class="w-10 h-10 sm:w-14 sm:h-14 shrink-0 rounded-lg sm:rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shadow-sm">
-                                                <img class="w-full h-full object-cover" src="{{ asset('image/' . $row->image) }}" onerror="this.src='{{ asset('image/default-music.png') }}'">
+                                                <img class="w-full h-full object-cover" src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $row->image }}" onerror="this.src='{{ asset('image/default-music.png') }}'">
                                             </div>
                                             <div class="min-w-0 space-y-0.5">
                                                 <p class="font-bold text-slate-800 text-xs sm:text-sm truncate group-hover:text-indigo-600 transition-colors">

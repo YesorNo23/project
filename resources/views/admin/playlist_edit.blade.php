@@ -41,7 +41,7 @@
                         <div id="imagePreviewContainer" class="w-full aspect-square rounded-2xl sm:rounded-[2rem] bg-slate-50 border-2 {{ isset($playlist) && $playlist->image ? 'border-solid border-indigo-200' : 'border-dashed border-slate-200' }} overflow-hidden flex items-center justify-center relative shadow-inner">
                             
                             {{-- รูปภาพ Preview --}}
-                            <img id="imagePreview" src="{{ isset($playlist) && $playlist->image ? asset('image/' . $playlist->image) : '#' }}" 
+                            <img id="imagePreview" src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ isset($playlist) && $playlist->image ? $playlist->image : '#' }}" 
                                  class="{{ isset($playlist) && $playlist->image ? 'opacity-100' : 'hidden opacity-0' }} w-full h-full object-cover transition-opacity duration-300">
                             
                             {{-- ไอคอนเมื่อยังไม่มีรูป --}}

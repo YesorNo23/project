@@ -164,7 +164,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 e.preventDefault();
                 if (categorySongs.length === 0) return;
                 const song = categorySongs[Math.floor(Math.random() * categorySongs.length)];
-                const imgUrl = song.image ? `/image/${song.image}` : "none";
+                const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                const imgUrl = song.image 
+                    ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                    : "";
                 openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, null, -1, song.id);
             });
         }
@@ -180,7 +184,11 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             function updateHero(index) {
                 const song = songs[index];
-                const imgUrl = song.image ? `/image/${song.image}` : 'none';
+                const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                const imgUrl = song.image 
+                    ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                    : "";
                 const cfg = CAT_CONFIG[song.cat] || { icon: '🎵', desc: 'เพลงบำบัดสำหรับคุณ' };
                 
                 if(heroImg) heroImg.style.backgroundImage = `url('${imgUrl}')`;
@@ -219,7 +227,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             cardGrid.innerHTML = '';
 
             songs.forEach((song, idx) => {
-                const imgUrl = song.image ? `/image/${song.image}` : 'none';
+                const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                const imgUrl = song.image 
+                    ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                    : "";
                 const card = document.createElement('div');
                 card.className = 'mcard';
                 card.innerHTML = `
@@ -313,7 +325,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const slideItem = document.createElement("div");
                 slideItem.className = "big-slide-item";
 
-                const imgUrl = song.image ? `/image/${song.image}` : "none";
+                const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                const imgUrl = song.image 
+                    ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                    : "";
 
                 slideItem.style.backgroundImage = song.image
                     ? `url('${imgUrl}')`
@@ -386,7 +402,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 songs.forEach((song, idx) => {
                     const card = document.createElement("div");
                     card.className = "small-music-card";
-                    const imgUrl = song.image ? `/image/${song.image}` : "none";
+                    const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                    const imgUrl = song.image 
+                        ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                        : "";
                     card.style.backgroundImage = song.image
                         ? `url('${imgUrl}')`
                         : `linear-gradient(135deg, ${cfg.color}88, ${cfg.color}44)`;
@@ -432,7 +452,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 if (allSongs.length === 0) return;
                 const song = allSongs[Math.floor(Math.random() * allSongs.length)];
                 // แก้จาก song.img → song.image ให้ตรงกับ field จริงจาก backend
-                const imgUrl = song.image ? `/image/${song.image}` : "none";
+                const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                const imgUrl = song.image 
+                    ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                    : "";
                 openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, song.cat, null, -1, song.id);
             });
         }
@@ -504,7 +528,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                     grid.className = "history-card-grid";
 
                     group.items.forEach(song => {
-                        const imgUrl = song.image ? `/image/${song.image}` : "none";
+                        const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                        const imgUrl = song.image 
+                            ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                            : "";
                         const card = document.createElement("div");
                     
                     card.className = 'history-card';
@@ -574,19 +602,19 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const color = colorForIndex(i);
                 // ใช้ปกที่ตั้งเอง หรือรูปเพลงแรกในเพลย์ลิสต์ ถ้าไม่มีเลยค่อย fallback เป็นสีพื้น
                 const coverImg = pl.cover
-                    ? `/image/${pl.cover}`
+                    ? `https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/${pl.cover}`
                     : (pl.songs && pl.songs[0] && pl.songs[0].image ? `/image/${pl.songs[0].image}` : "");
 
                 const card = document.createElement("div");
                 card.className = "playlist-vinyl-card";
-            card.innerHTML = `
-                    <div class="playlist-vinyl-stage">
-                        <div class="playlist-vinyl-square" style="background:${color};"></div>
-                        <div class="playlist-vinyl-cover" style="background-image:url('${coverImg}'); background-color:${color};"></div>
-                    </div>
-                    <div class="playlist-vinyl-name">${pl.name}</div>
-                    <div class="playlist-vinyl-count">${pl.song_count} เพลง</div>
-                `;
+                card.innerHTML = `
+                        <div class="playlist-vinyl-stage">
+                            <div class="playlist-vinyl-square" style="background:${color};"></div>
+                            <div class="playlist-vinyl-cover" style="background-image:url('${coverImg}'); background-color:${color};"></div>
+                        </div>
+                        <div class="playlist-vinyl-name">${pl.name}</div>
+                        <div class="playlist-vinyl-count">${pl.song_count} เพลง</div>
+                    `;
                 card.addEventListener("click", () => {
                     window.location.href = `/playlist/${pl.id}`;
                 });
@@ -622,7 +650,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         function playFromPlaylist(idx, container = null) {
             const song = playlistSongs[idx];
             if (!song) return;
-            const imgUrl = song.image ? `/image/${song.image}` : "none";
+            const imgUrl = song.image ? `https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/${song.image}` : "none";
             openPlayerModal(song.musicname, song.musicfile, imgUrl, null,
                 container ?? window.playlistRows[idx] ?? null,
                 song.cat, playlistSongs, idx, song.id);
@@ -656,7 +684,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 window.playlistRows = [];
 
                 data.songs.forEach((song, idx) => {
-                    const imgUrl = song.image ? `/image/${song.image}` : "none";
+                    const imgUrl = song.image ? `https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/${song.image}` : "none";
                     const row = document.createElement("div");
                     row.className = "pld-song-row";
                     row.innerHTML = `

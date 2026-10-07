@@ -38,13 +38,13 @@
                     <td class="px-0 py-2 sm:px-4 sm:py-4 overflow-hidden align-middle text-left block sm:table-cell">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden border border-slate-100 shadow-sm">
-                                <img class="w-full h-full object-cover" src="{{ asset('image/' . $row->music->image) }}">
+                                <img class="w-full h-full object-cover" src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $row->music->image ?? null }}">
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="font-bold text-slate-800 text-xs sm:text-sm truncate leading-snug group-hover:text-indigo-600 transition-colors">{{ $row->music->name ?? 'ไม่ทราบชื่อ' }}</p>
                                 <p class="text-[10px] sm:text-xs text-slate-400 mt-0.5 truncate flex items-center gap-1">
                                     <i class="bi bi-clock text-[9px] sm:text-[11px]"></i>
-                                    {{ $row->music->duration ? \Carbon\CarbonInterval::seconds($row->music->duration)->cascade()->format('%I:%S') : '00:00' }}
+                                    {{ $row->music?->duration ? \Carbon\CarbonInterval::seconds($row->music->duration)->cascade()->format('%I:%S') : '00:00' }}
                                 </p>
                             </div>
                         </div>

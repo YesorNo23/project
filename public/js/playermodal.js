@@ -222,7 +222,7 @@
 
         slots.forEach(slot => {
             const cfg = window.CAT_CONFIG?.[slot.cat] || { label: slot.cat ?? 'เพลย์ลิสต์', icon: '🎵' };
-            const imgUrl = slot.song.image ? `/image/${slot.song.image}` : 'none';
+            const imgUrl = slot.song.image ? `https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/${slot.song.image}` : 'none';
 
             const card = document.createElement('button');
             card.type = 'button';
@@ -272,7 +272,7 @@
 
     function playQueueSong(queue, index, song) {
         if (!song) return;
-        const imgUrl = song.image ? `/image/${song.image}` : "none";
+        const imgUrl = song.image ? `https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/${song.image}` : "none";
         const rowEl = window.isPlaylistPlayback ? (window.playlistRows?.[index] ?? null) : null;
         window.openPlayerModal(song.musicname, song.musicfile, imgUrl, null, rowEl, song.cat, queue, index, song.id);
     }

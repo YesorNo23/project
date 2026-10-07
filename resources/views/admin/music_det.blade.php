@@ -62,7 +62,7 @@
                 
                 <div class="relative mt-4">
                     @if($music->image)
-                        <img src="{{ asset('image/' . $music->image) }}" class="w-48 h-48 rounded-[1.0rem] mx-auto border-4 border-white shadow-xl object-cover">
+                        <img src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $music->image }}" class="w-48 h-48 rounded-[1.0rem] mx-auto border-4 border-white shadow-xl object-cover">
                     @else
                         <div class="w-32 h-32 rounded-[2.5rem] mx-auto border-4 border-white shadow-xl bg-slate-100 flex items-center justify-center">
                             <i class="bi bi-music-note-beamed text-4xl text-slate-300"></i>

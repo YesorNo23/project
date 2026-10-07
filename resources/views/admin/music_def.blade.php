@@ -33,7 +33,7 @@
                         <a href="{{ route('music.det',$row->id) }}">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 shrink-0 rounded-[10px] bg-indigo-100 flex items-center justify-center overflow-hidden border border-slate-200">
-                                <img class="w-full h-full object-cover" src="{{ asset('image/' . $row->image) }}">
+                                <img class="w-full h-full object-cover" src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $row->image }}">
                             </div>
                             <div class="break-words max-w-[200px] sm:max-w-none">
                                 <p class="font-bold text-slate-800 text-sm whitespace-normal">{{ $row->name ?? '' }}</p>

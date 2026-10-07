@@ -47,7 +47,7 @@
                     
                     <div class="relative group mx-auto lg:mx-0 max-w-[240px] sm:max-w-none">
                         <div id="imagePreviewContainer" class="w-full aspect-square rounded-2xl sm:rounded-[2rem] bg-slate-50 border-2 border-dashed border-slate-200 overflow-hidden flex items-center justify-center relative shadow-inner">
-                            <img id="imagePreview" src="{{ $music?->image ? asset('image/' . $music->image) : '#' }}" 
+                            <img id="imagePreview" src="https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/{{ $music?->image ? $music->image : '#' }}" 
                                  class="{{ $music?->image ? '' : 'hidden' }} w-full h-full object-cover">
                             <div id="placeholderIcon" class="{{ $music?->image ? 'hidden' : '' }} text-slate-400 text-center p-4">
                                 <i class="bi bi-cloud-arrow-up text-3xl sm:text-4xl"></i>

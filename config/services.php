@@ -35,10 +35,15 @@ return [
         ],
     ],
     'backblaze' => [
-    'key_id' => env('B2_KEY_ID'),
-    'application_key' => env('B2_APPLICATION_KEY'),
-    'bucket_name' => env('B2_BUCKET_NAME'),
-    'bucket_id' => env('B2_BUCKET_ID'),
-],
+        'key_id' => env('B2_KEY_ID'),
+        'application_key' => env('B2_APPLICATION_KEY'),
+        'bucket_name' => env('B2_BUCKET_NAME'),
+        'bucket_id' => env('B2_BUCKET_ID'),
+    ],
+
+    'supabase' => [
+        'url' => env('SUPABASE_URL'),
+        'key' => env('SUPABASE_SERVICE_KEY'),
+    ],
 
 ];
