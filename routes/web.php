@@ -94,7 +94,7 @@ Route::get('wave', function () {return view('user.wave');})->middleware('auth')-
 Route::get('get_songs/{category?}',[MusicController::class,'get_songs']); // เส้นทางในการเรียกข้อมูลคลื่นเสียง
 Route::get('get_history',[HistoryController::class,'get_history'])->middleware('auth'); // เส้นทางในการเรียกข้อมูลประวัติการฟัง
 Route::get('get_playlists',[PlayListController::class,'get_playlists'])->middleware('auth'); // เส้นทางในการเรียกข้อมล playlist
-Route::get('/get_playlist/{id}', [PlayListController::class, 'get_playlist'])->middleware('auth');
+Route::get('get_playlist/{id}', [PlayListController::class, 'get_playlist'])->middleware('auth');
 
 Route::post('history/save',[HistoryController::class,'save']); // เส้นทางในการบันทึกประวัติการฟังของผู้ใช
 Route::put('/profile',[UserController::class,'updateprofile'])->middleware('auth')->name('profile.update'); // เส้นทางในการเรียกข้อมูลของผู้ใช้

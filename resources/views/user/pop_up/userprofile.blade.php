@@ -48,7 +48,7 @@
     <div class="pf-section">
         <div class="pf-field">
             <label for="pf-name">ชื่อ</label>
-            <input type="text" id="pf-name" name="name" value="{{ auth()->user()->name ?? '' }}" required>
+            <input class="up-input" type="text" id="pf-name" name="name" value="{{ auth()->user()->name ?? '' }}" required>
             <p class="pf-error" data-error-for="name" role="alert">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -59,7 +59,7 @@
 
         <div class="pf-field">
             <label for="pf-surname">นามสกุล</label>
-            <input type="text" id="pf-surname" name="surname" value="{{ auth()->user()->surname ?? '' }}" required>
+            <input class="up-input" type="text" id="pf-surname" name="surname" value="{{ auth()->user()->surname ?? '' }}" required>
             <p class="pf-error" data-error-for="surname" role="alert">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -71,7 +71,7 @@
         <div class="pf-row">
             <div class="pf-field">
                 <label for="pf-birthdate">วันเกิด</label>
-                <input type="date" id="pf-birthdate" name="birthdate" value="{{ auth()->user()->birthdate ?? '' }}" required>
+                <input class="up-input" type="date" id="pf-birthdate" name="birthdate" value="{{ auth()->user()->birthdate ?? '' }}" required>
                 <p class="pf-error" data-error-for="birthdate" role="alert">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -194,7 +194,7 @@
         border-color: #D4537E;
         box-shadow: 0 0 0 3px rgba(212, 83, 126, 0.15);
     }
-    input, select {
+    .up-input, select {
         width: 100%;
         padding: 0.6rem 0.9rem;
         border: 1px solid #ED93B1;

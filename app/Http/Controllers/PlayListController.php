@@ -187,6 +187,7 @@ class PlayListController extends Controller
                     'musicfile'  => $music->file_path,
                     'image'      => $music->image,
                     'duration'   => $music->duration,
+                    'cat'        => $music->filterDetails->firstWhere('category_id', 2)?->name,
                 ];
             })->values(),
         ];

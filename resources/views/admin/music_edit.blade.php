@@ -3,7 +3,19 @@
 @section('title',isset($music) ? 'แก้ไขคลื่นเสียง - ' .$music->name : 'อัปโหลดคลื่นเสียง' )
 
 @section('content')
-    
+    <!-- Loading Overlay (ซ่อนไว้เป็นค่าเริ่มต้น) -->
+    <div id="loadingOverlay" class="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm hidden flex-col items-center justify-center transition-opacity opacity-0 duration-300">
+        <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-[2rem] shadow-2xl flex flex-col items-center max-w-xs w-full mx-4 transform scale-95 transition-transform duration-300" id="loadingModal">
+            <!-- Spinner Icon -->
+            <svg class="animate-spin h-10 w-10 sm:h-12 sm:w-12 text-indigo-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-1">กำลังบันทึกข้อมูล...</h3>
+            <p class="text-xs sm:text-sm text-slate-500 text-center">กรุณารอสักครู่ อาจใช้เวลาสักพักขึ้นอยู่กับขนาดไฟล์ของคุณ</p>
+        </div>
+    </div>
+
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-5 sm:mb-8 gap-4 min-w-0">
         <div class="flex items-center gap-3 sm:gap-4 min-w-0">
             <a href="javascript:history.back()" class="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white border border-slate-200 rounded-xl sm:rounded-2xl text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm shrink-0">
@@ -89,7 +101,7 @@
                         </div>
                         <div>
                             <label for="description" class="text-xs sm:text-sm font-semibold text-slate-700 mb-1.5 block">คำอธิบาย</label>
-                            <textarea id="description" name="detail" rows="3" class="form-input py-2 sm:py-3 text-xs sm:text-sm" placeholder="ระบุรายละเอียดเพิ่มเติม...">{{ $music->description ?? '' }}</textarea>
+                            <textarea id="description" name="detail" rows="3" class="form-input py-2 sm:py-3 text-xs sm:text-sm border rounded-xl w-full px-3" placeholder="ระบุรายละเอียดเพิ่มเติม...">{{ $music->description ?? '' }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -124,7 +136,7 @@
                 <a href="javascript:history.back()" class="w-full sm:w-auto text-center bg-slate-100 text-slate-700 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-200 transition-all">
                     ยกเลิก
                 </a>
-                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 whitespace-nowrap">
+                <button type="submit" id="submitBtn" class="w-full sm:w-auto inline-flex items-center justify-center bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 whitespace-nowrap">
                     บันทึกข้อมูล
                 </button>
             </div>
@@ -141,6 +153,12 @@
         const placeholderIcon = document.getElementById('placeholderIcon');
         const hoverOverlay = document.getElementById('hoverOverlay');
         const previewContainer = document.getElementById('imagePreviewContainer');
+        
+        // ตัวแปรสำหรับ Popup อัปโหลด
+        const editMusicForm = document.getElementById('editMusicForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingModal = document.getElementById('loadingModal');
+        const submitBtn = document.getElementById('submitBtn');
 
         // สคริปต์สำหรับตกแต่งสถานะ Radio Button
         const statusRadios = document.querySelectorAll('input[name="status"]');
@@ -190,6 +208,28 @@
                 previewContainer.classList.remove('border-solid', 'border-indigo-200');
                 
                 if (hoverOverlay) hoverOverlay.classList.add('hidden');
+            }
+        });
+
+        // สคริปต์แสดง Popup ระหว่างรอฟอร์มอัปโหลด
+        editMusicForm.addEventListener('submit', function(e) {
+            // เช็คว่าฟอร์มผ่าน validation ของ HTML5 (เช่น required) ครบถ้วนหรือไม่
+            if (this.checkValidity()) {
+                // แสดง Overlay
+                loadingOverlay.classList.remove('hidden');
+                loadingOverlay.classList.add('flex');
+                
+                // อนิเมชั่นเฟดอินให้ Overlay และ Modal เด้งขึ้นมา
+                setTimeout(() => {
+                    loadingOverlay.classList.remove('opacity-0');
+                    loadingModal.classList.remove('scale-95');
+                    loadingModal.classList.add('scale-100');
+                }, 10);
+
+                // เปลี่ยนข้อความบนปุ่มและ Disable ป้องกันการกดซ้ำ
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+                submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังอัปโหลด...';
             }
         });
     });

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Music;
 use App\Models\Filter;
+use App\Services\B2Client;
+use Illuminate\Support\Str;
 
 class MusicController extends Controller
 {
@@ -59,17 +61,29 @@ class MusicController extends Controller
         }
 
         if ($request->hasFile('file_path')) {
-            $audioName = time() . '_audio.' . $request->file_path->extension();
-            $request->file_path->move(public_path('audio'), $audioName);
-            $music->file_path = $audioName;
+            $file = $request->file('file_path');
+            $ext  = strtolower($file->extension());
 
+            // 1) อ่านความยาวเพลงจากไฟล์ชั่วคราว (ก่อนอัปโหลด)
             if (class_exists('\getID3')) {
-                $getID3 = new \getID3;
-                $fileInfo = $getID3->analyze(public_path('audio/' . $audioName));
+                $getID3   = new \getID3;
+                $fileInfo = $getID3->analyze($file->getRealPath());
                 if (isset($fileInfo['playtime_seconds'])) {
-                    $music->duration = $fileInfo['playtime_seconds']; 
+                    $music->duration = $fileInfo['playtime_seconds'];
                 }
             }
+
+            // 2) อัปโหลดขึ้น B2
+            $audioName =  time() . '_audio.' . $ext;
+
+            $result = app(B2Client::class)->uploadFile(
+                $file->getRealPath(),
+                $audioName,
+                $file->getMimeType()
+            );
+
+            // 3) เก็บชื่อไฟล์ใน B2 ลง DB
+            $music->file_path = $result['fileName']; // เช่น audio/1759800000_Ab12Cd34_audio.mp3
         }
 
         $music->save();
