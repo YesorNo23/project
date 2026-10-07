@@ -69,7 +69,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                     // สุ่มเลือก 1 เพลงจากหมวดนั้น
                     const randomIndex = Math.floor(Math.random() * pool.length);
                     const song = pool[randomIndex];
-                    const imgUrl = song.image ? `/image/${song.image}` : "none";
+                    const supabaseBaseUrl = "https://uitkpjtsgolmupmwzslp.supabase.co/storage/v1/object/public/image/";
+
+                    const imgUrl = song.image 
+                        ? (song.image.startsWith('http') ? song.image : `${supabaseBaseUrl}${song.image}`) 
+                        : "";
 
                     // เปิดป็อปอัพเครื่องเล่นและสั่งให้เพลงเริ่มเล่นทันที
                     openPlayerModal(song.musicname, song.musicfile, imgUrl, null, null, catlist[cat], pool, randomIndex);
